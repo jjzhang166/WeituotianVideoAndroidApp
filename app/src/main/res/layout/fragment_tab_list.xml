@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/lv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:divider="@color/transparent"
+        android:dividerHeight="0dp"
+        android:paddingTop="8dp"
+        android:visibility="invisible" />
+
+    <com.weituotian.video.widget.DramaRecyclerView
+        android:id="@+id/rv_videolist"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#c75e78"
+        android:columnWidth="130dp"
+        android:gravity="center_horizontal"
+        android:horizontalSpacing="35dp"
+        android:orientation="vertical"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical"
+        android:visibility="invisible" />
+
+</android.support.v4.widget.SwipeRefreshLayout>
