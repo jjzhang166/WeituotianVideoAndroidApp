@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.widget.LinearLayout;
 
 import com.weituotian.video.R;
+import com.weituotian.video.fragment.BiliFragment;
 import com.weituotian.video.fragment.TabListFragment;
 
 import java.util.ArrayList;
@@ -67,7 +68,9 @@ public class MainActivity extends BaseActivity {
         }
         tabFragments = new ArrayList<>();
         for (String s : tabIndicators) {
-            tabFragments.add(TabListFragment.newInstance(s));
+
+//            tabFragments.add(TabListFragment.newInstance(s));//旧的
+            tabFragments.add(new BiliFragment());
         }
         contentAdapter = new ContentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(contentAdapter);
