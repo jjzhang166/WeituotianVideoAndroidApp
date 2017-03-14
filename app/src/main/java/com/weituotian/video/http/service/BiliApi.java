@@ -1,6 +1,7 @@
 package com.weituotian.video.http.service;
 
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -14,6 +15,6 @@ import rx.Observable;
  */
 public interface BiliApi {
 
-    @GET("index/ding/13.json")
-    Observable<String> getVideos(@Query("size") int size, @Query("offset") int offset);
+    @GET("index/ding/{index}.json")
+    Observable<String> getVideos(@Path("index") int index);
 }

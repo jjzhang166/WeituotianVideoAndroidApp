@@ -15,7 +15,8 @@ public class BiliPresenter extends VideoPresenter {
     @Override
     public Observable<String> getHttpCallObservable(int curPage) {
         int offset = (curPage - 1) * PAGE_SIZE;
-        return RetrofitFactory.getBiliVideoService().getVideos(PAGE_SIZE, offset);
+        int partitionId = getView().getPartitionId();
+        return RetrofitFactory.getBiliVideoService().getVideos(partitionId);
     }
 
     @Override

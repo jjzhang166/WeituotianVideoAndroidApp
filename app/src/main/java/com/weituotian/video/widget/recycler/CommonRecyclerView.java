@@ -93,7 +93,7 @@ public class CommonRecyclerView extends RecyclerView {
         });
 
         //设置加载更多处理
-        super.setOnScrollListener(new OnScrollListener() {
+        super.addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 

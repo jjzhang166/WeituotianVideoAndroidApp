@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity {
         DrawerLayout.LayoutParams layoutParams = null;
         if (mMenu != null) {
             layoutParams = (DrawerLayout.LayoutParams) mMenu.getLayoutParams();
-            layoutParams.width = getScreenSize()[0]/4*3;
+            layoutParams.width = getScreenSize()[0] / 4 * 3;
         }
 
     }
@@ -62,21 +62,20 @@ public class MainActivity extends BaseActivity {
         this.mTabs = (TabLayout) findViewById(R.id.tl_tabs);
         this.mViewPager = (ViewPager) findViewById(R.id.vp_content);
 
-        tabIndicators = new ArrayList<>();
+        tabIndicators = new ArrayList<>();//fragment的标题
+        tabFragments = new ArrayList<>();//fragment的列表
+
         for (int i = 0; i < 3; i++) {
             tabIndicators.add("Tab " + i);
+            BiliFragment biliFragment = BiliFragment.newInstance(i);
+            tabFragments.add(biliFragment);
         }
-        tabFragments = new ArrayList<>();
-        for (String s : tabIndicators) {
 
-//            tabFragments.add(TabListFragment.newInstance(s));//旧的
-            tabFragments.add(new BiliFragment());
-        }
         contentAdapter = new ContentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(contentAdapter);
     }
 
-    private void initTab(){
+    private void initTab() {
         mTabs.setTabMode(TabLayout.MODE_FIXED);
         mTabs.setTabTextColors(ContextCompat.getColor(this, R.color.colorAccent), ContextCompat.getColor(this, R.color.white));//颜色
         mTabs.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.white));

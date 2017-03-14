@@ -1,8 +1,10 @@
 package com.weituotian.video.fragment;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,10 @@ import android.view.ViewGroup;
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.hannesdorfmann.mosby.mvp.lce.MvpLceFragment;
 import com.hannesdorfmann.mosby.mvp.lce.MvpLceView;
+import com.trello.rxlifecycle.LifecycleProvider;
+import com.trello.rxlifecycle.android.FragmentEvent;
 import com.weituotian.video.R;
+import com.weituotian.video.utils.UIUtil;
 import com.weituotian.video.widget.LoadingView;
 
 import java.util.concurrent.TimeUnit;
@@ -24,7 +29,9 @@ import rx.functions.Action1;
  * @site http://ittiger.cn
  */
 public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, P extends MvpPresenter<V>>
-        extends MvpLceFragment<CV, M, V, P> {
+        extends MvpLceFragment<CV, M, V, P> implements LifecycleProvider<FragmentEvent> {
+
+    protected final static String TAG = "BaseFragment";
 
     protected Context mContext;
 
@@ -52,9 +59,11 @@ public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, 
         super.onViewCreated(view, savedInstanceState);
         showLoading(false);
         if(isInitRefreshEnable() && isDelayRefreshEnable() == false) {
+            Log.d(TAG, "onViewCreated->loadData");
             loadData(false);
         }
     }
+
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -68,13 +77,17 @@ public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, 
     private void refreshData(final boolean pullToRefresh) {
 
         if(presenter != null) {
+            Log.d(TAG, "refreshData->loadData");
+
             loadData(pullToRefresh);
         } else {
-            Observable.timer(50, TimeUnit.MILLISECONDS)
+
+            Observable.timer(50, TimeUnit.MILLISECONDS)//50ms后执行
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<Long>() {
                         @Override
                         public void call(Long aLong) {
+                            Log.d(TAG, "Observable subscribe call->loadData");
                             refreshData(pullToRefresh);
                         }
                     });

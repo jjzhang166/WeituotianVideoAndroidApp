@@ -151,8 +151,9 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
     }
 
     public void reset(List<T> list) {
-
-        mList = list;
+        mList.clear();
+        mList.addAll(list);
+//        mList = list;
         notifyDataSetChanged();
     }
 

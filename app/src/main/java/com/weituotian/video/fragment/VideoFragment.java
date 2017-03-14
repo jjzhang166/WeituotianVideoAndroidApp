@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -37,7 +38,7 @@ public abstract class VideoFragment extends
     @BindView(R.id.rv_videolist)
     CommonRecyclerView mRecyclerView;
 
-    private View mFooterView;
+    private View mFooterView;//显示加载中的view
     private VideoAdapter mVideoAdapter;
     private boolean mIsFirstLoad = true;
 
@@ -50,14 +51,18 @@ public abstract class VideoFragment extends
         mRecyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.d_10)));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setOnLoadMoreListener(this);
+
+        //上拉刷新
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                Log.d(TAG, "onRefresh->loadData");
+                UIUtil.showToast(mContext, "开始加载数据");
                 loadData(true);
             }
         });
 
+        //暂时无用
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -79,10 +84,9 @@ public abstract class VideoFragment extends
 
     @Override
     public void loadData(boolean pullToRefresh) {
-
         showLoading(pullToRefresh);
         presenter.refreshData(pullToRefresh);
-        if(mIsFirstLoad) {
+        if (mIsFirstLoad) {
             mIsFirstLoad = false;
         }
     }
@@ -90,7 +94,7 @@ public abstract class VideoFragment extends
     @Override
     public void showLoadMoreErrorView() {
 
-        if(mFooterView.getVisibility() == View.VISIBLE) {
+        if (mFooterView.getVisibility() == View.VISIBLE) {
             mFooterView.setVisibility(View.GONE);
         }
     }
@@ -98,10 +102,10 @@ public abstract class VideoFragment extends
     @Override
     public void showLoadMoreView() {
 
-        if(mFooterView.getVisibility() == View.GONE) {
+        if (mFooterView.getVisibility() == View.GONE) {
             mFooterView.setVisibility(View.VISIBLE);
         }
-        UIUtil.showToast(mContext, mContext.getString(R.string.no_more_videos));
+//        UIUtil.showToast(mContext, mContext.getString(R.string.loading));
     }
 
     @Override
@@ -114,20 +118,24 @@ public abstract class VideoFragment extends
             mVideoAdapter.addFooterView(mFooterView);
             mRecyclerView.setAdapter(mVideoAdapter);
         } else {
-            mVideoAdapter.addAll(data, 0);
+            mVideoAdapter.reset(data);
+            mVideoAdapter.addAll(data, 0);//从第0个开始增加
         }
     }
 
     @Override
     public void setLoadMoreData(List<BiliDingVideo.VideoBean> videos) {
 
-        mVideoAdapter.addAll(videos);
+        mVideoAdapter.addAll(videos);//从最后面开始增加
     }
 
+    /**
+     * swipeRecycleView 下拉刷新的时候
+     */
     @Override
     public void onLoadMore() {
-
         showLoadMoreView();
+        Log.d(TAG, "onLoadMore->loadData");
         presenter.loadMoreData();
     }
 
@@ -135,7 +143,7 @@ public abstract class VideoFragment extends
     public void showLoading(boolean pullToRefresh) {
 
         super.showLoading(pullToRefresh);
-        if(pullToRefresh) {
+        if (pullToRefresh) {
             mSwipeRefreshLayout.setRefreshing(true);
         }
     }
@@ -151,7 +159,7 @@ public abstract class VideoFragment extends
     public void showError(Throwable e, boolean pullToRefresh) {
 
         super.showError(e, pullToRefresh);
-        if(pullToRefresh) {
+        if (pullToRefresh) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
     }

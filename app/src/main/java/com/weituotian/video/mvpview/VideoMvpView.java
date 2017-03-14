@@ -16,4 +16,6 @@ public interface VideoMvpView extends MvpLceView<List<BiliDingVideo.VideoBean>> 
     void showLoadMoreView();
 
     void setLoadMoreData(List<BiliDingVideo.VideoBean> videos);
+
+    int getPartitionId();
 }
