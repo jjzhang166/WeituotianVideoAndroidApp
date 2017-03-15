@@ -29,11 +29,13 @@ import rx.functions.Action1;
  * @site http://ittiger.cn
  */
 public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, P extends MvpPresenter<V>>
-        extends MvpLceFragment<CV, M, V, P> implements LifecycleProvider<FragmentEvent> {
+        extends MvpLceFragment<CV, M, V, P> {
 
     protected final static String TAG = "BaseFragment";
 
     protected Context mContext;
+
+    protected View mContentView;
 
     @Override
     public void onAttach(Context context) {
@@ -46,19 +48,37 @@ public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_base, container, false);
+        //防止Fragment多次切换时调用onCreateView重新加载View
+        if (null == mContentView) {
+            ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_base, container, false);
 
-        view.addView(getContentView(inflater, savedInstanceState));
+            view.addView(getContentView(inflater, savedInstanceState));
 
-        return view;
+            mContentView = view;
+        }
+        else
+        {
+            /**
+             * 缓存的rootView需要判断是否已经被加过parent，
+             * 如果有parent需要从parent删除，要不然会发生这个rootview已经有parent的错误。
+             */
+            ViewGroup parent = (ViewGroup) mContentView.getParent();
+            if (parent != null)
+            {
+                parent.removeView(mContentView);
+            }
+        }
+
+        return mContentView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onViewCreated");
 
         super.onViewCreated(view, savedInstanceState);
         showLoading(false);
-        if(isInitRefreshEnable() && isDelayRefreshEnable() == false) {
+        if(isInitRefreshEnable() && !isDelayRefreshEnable()) {
             Log.d(TAG, "onViewCreated->loadData");
             loadData(false);
         }
@@ -69,8 +89,12 @@ public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, 
     public void setUserVisibleHint(boolean isVisibleToUser) {
 
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser && isInitRefreshEnable() == false && isDelayRefreshEnable()) {
+        /*if(isVisibleToUser && !isInitRefreshEnable() && isDelayRefreshEnable()) {
             refreshData(false);
+        }*/
+        if (getUserVisibleHint()) {
+            refreshData(false);
+        } else {
         }
     }
 
@@ -102,17 +126,16 @@ public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, 
      */
     public abstract View getContentView(LayoutInflater inflater, @Nullable Bundle savedInstanceState);
 
-    public boolean isInitRefreshEnable() {
-
-        return true;
-    }
-
-    public boolean isDelayRefreshEnable() {
+    public boolean isInitRefreshEnable() {//刚刚创建fragment就加载数据
 
         return false;
     }
 
-    public abstract int getName();
+    public boolean isDelayRefreshEnable() {//fragment可见的时候才加载数据
+        return true;
+    }
+
+    public abstract String getName();
 
     @Override
     protected String getErrorMessage(Throwable e, boolean pullToRefresh) {

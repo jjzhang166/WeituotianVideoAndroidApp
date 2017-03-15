@@ -23,8 +23,8 @@ public class BiliFragment extends VideoFragment {
     private static final String PARTITION_KEY="PARTITION";
 
     @Override
-    public int getName() {
-        return R.id.bili_video;
+    public String getName() {
+        return  getResources().getResourceName(R.id.bili_video);
     }
 
     public static BiliFragment newInstance(int partitionId) {

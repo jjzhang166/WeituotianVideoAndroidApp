@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.widget.LinearLayout;
 
 import com.weituotian.video.R;
+import com.weituotian.video.adapter.MainPagerAdapter;
 import com.weituotian.video.fragment.BiliFragment;
 import com.weituotian.video.fragment.TabListFragment;
 
@@ -26,11 +28,9 @@ public class MainActivity extends BaseActivity {
     private LinearLayout mMenu;
 
     private TabLayout mTabs;
-    private List<String> tabIndicators;
 
     private ViewPager mViewPager;
-    private List<Fragment> tabFragments;
-    private ContentPagerAdapter contentAdapter;
+    private MainPagerAdapter contentAdapter;
 
 
     @Override
@@ -61,17 +61,12 @@ public class MainActivity extends BaseActivity {
 
         this.mTabs = (TabLayout) findViewById(R.id.tl_tabs);
         this.mViewPager = (ViewPager) findViewById(R.id.vp_content);
+        //设置页面缓存数量
+        mViewPager.setOffscreenPageLimit(3);
+        //设置当前fragment
+        mViewPager.setCurrentItem(1);
 
-        tabIndicators = new ArrayList<>();//fragment的标题
-        tabFragments = new ArrayList<>();//fragment的列表
-
-        for (int i = 0; i < 3; i++) {
-            tabIndicators.add("Tab " + i);
-            BiliFragment biliFragment = BiliFragment.newInstance(i);
-            tabFragments.add(biliFragment);
-        }
-
-        contentAdapter = new ContentPagerAdapter(getSupportFragmentManager());
+        contentAdapter = new MainPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(contentAdapter);
     }
 
@@ -83,26 +78,4 @@ public class MainActivity extends BaseActivity {
         mTabs.setupWithViewPager(mViewPager);
     }
 
-    class ContentPagerAdapter extends FragmentPagerAdapter {
-
-        public ContentPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return tabFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return tabIndicators.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return tabIndicators.get(position);
-        }
-
-    }
 }

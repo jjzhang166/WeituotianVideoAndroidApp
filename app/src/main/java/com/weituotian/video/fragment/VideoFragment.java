@@ -119,7 +119,7 @@ public abstract class VideoFragment extends
             mRecyclerView.setAdapter(mVideoAdapter);
         } else {
             mVideoAdapter.reset(data);
-            mVideoAdapter.addAll(data, 0);//从第0个开始增加
+//            mVideoAdapter.addAll(data, 0);//从第0个开始增加
         }
     }
 

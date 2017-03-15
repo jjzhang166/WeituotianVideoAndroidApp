@@ -93,7 +93,7 @@ public abstract class VideoPresenter extends MvpBasePresenter<VideoMvpView>
 
                         Gson gson = new Gson();
                         BiliDingVideo dingVideo = gson.fromJson(result, BiliDingVideo.class);
-                        return dingVideo.getList();
+                        return dingVideo.getList().subList(0, 5);//提取5个，测试用
 
                     }
                 })
