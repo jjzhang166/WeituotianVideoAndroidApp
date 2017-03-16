@@ -25,11 +25,25 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <!--container-->
         <android.support.v4.view.ViewPager
             android:id="@+id/vp_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <!--floating button-->
+        <!--app:layout_behavior="com.weituotian.video.widget.behavior.ScrollBehavior"-->
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_anchor="@id/vp_content"
+            android:src="@drawable/ic_refresh_purple_a400_18dp"
+            app:layout_anchorGravity="bottom|right"
+            app:backgroundTint="#9cd25a"
+            />
 
     </android.support.design.widget.CoordinatorLayout>
 

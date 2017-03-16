@@ -35,14 +35,12 @@ public class BiliFragment extends VideoFragment {
         return biliFragment;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected void initView() {
         Bundle args = getArguments();
         if (args != null) {
             partitionId = Integer.valueOf(args.getString(PARTITION_KEY));
         }
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @NonNull

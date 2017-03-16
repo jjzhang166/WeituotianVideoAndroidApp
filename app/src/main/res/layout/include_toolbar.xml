@@ -1,10 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tb_toolbar"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:id="@+id/tb_toolbar"
-    android:title="@string/app_name"
     android:background="@color/colorPrimary"
-    app:theme="@style/OverFlowMenuTheme"
-    app:layout_scrollFlags="scroll|enterAlways"/>
+    app:layout_scrollFlags="scroll|enterAlways"
+    app:theme="@style/OverFlowMenuTheme">
+
+    <LinearLayout
+        android:id="@+id/navigation_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_drawer_home" />
+
+        <com.weituotian.video.widget.CircleImageView
+            android:id="@+id/toolbar_user_avatar"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/ic_hotbitmapgg_avatar"
+            app:border_color="@color/white"
+            app:border_width="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:maxLines="1"
+            android:text="@string/no_login"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+             />
+
+    </LinearLayout>
+
+</android.support.v7.widget.Toolbar>

@@ -8,7 +8,7 @@ import com.trello.rxlifecycle.LifecycleProvider;
 import com.trello.rxlifecycle.LifecycleTransformer;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.weituotian.video.entity.BiliDingVideo;
-import com.weituotian.video.mvpview.VideoMvpView;
+import com.weituotian.video.mvpview.IVideoView;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import rx.subjects.BehaviorSubject;
  * @author laohu
  * @site http://ittiger.cn
  */
-public abstract class VideoPresenter extends MvpBasePresenter<VideoMvpView>
+public abstract class VideoPresenter extends MvpBasePresenter<IVideoView>
         implements TypePresenter, LifecycleProvider<Integer> {
 
     private final BehaviorSubject<Integer> lifecycleSubject = BehaviorSubject.create();
@@ -68,7 +68,7 @@ public abstract class VideoPresenter extends MvpBasePresenter<VideoMvpView>
     }
 
     @Override
-    public void attachView(VideoMvpView view) {
+    public void attachView(IVideoView view) {
         super.attachView(view);
         lifecycleSubject.onNext(PresenterEvent.ATTACH);
     }

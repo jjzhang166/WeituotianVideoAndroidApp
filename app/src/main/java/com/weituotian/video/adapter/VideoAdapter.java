@@ -27,6 +27,10 @@ public class VideoAdapter extends HeaderAndFooterAdapter<BiliDingVideo.VideoBean
 
     private Context mContext;
 
+    public VideoAdapter(Context mContext) {
+        this.mContext = mContext;
+    }
+
     public VideoAdapter(Context context, List<BiliDingVideo.VideoBean> list) {
 
         super(list);

@@ -15,4 +15,7 @@ public interface GlobalConstant {
     String VIDEO_CODE_MATERIAL = "123456";
     String VIDEO_CODE_ANIM = "654321";
     String IMAGE_URL = "image";
+
+    String BASE_URL = "";
+    String LOGIN_URL = "";
 }

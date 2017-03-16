@@ -12,16 +12,20 @@ import android.view.View;
 import com.weituotian.video.R;
 import com.weituotian.video.adapter.VideoAdapter;
 import com.weituotian.video.entity.BiliDingVideo;
-import com.weituotian.video.mvpview.VideoMvpView;
+import com.weituotian.video.mvpview.IVideoView;
 import com.weituotian.video.presenter.VideoPresenter;
 import com.weituotian.video.utils.UIUtil;
 import com.weituotian.video.widget.recycler.CommonRecyclerView;
 import com.weituotian.video.widget.recycler.SpacesItemDecoration;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 
 /**
@@ -29,8 +33,8 @@ import butterknife.ButterKnife;
  * @site http://ittiger.cn
  */
 public abstract class VideoFragment extends
-        BaseFragment<SwipeRefreshLayout, List<BiliDingVideo.VideoBean>, VideoMvpView, VideoPresenter>
-        implements VideoMvpView, CommonRecyclerView.LoadMoreListener {
+        BaseFragment<SwipeRefreshLayout, List<BiliDingVideo.VideoBean>, IVideoView, VideoPresenter>
+        implements IVideoView, CommonRecyclerView.LoadMoreListener {
 
     @BindView(R.id.contentView)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -48,10 +52,6 @@ public abstract class VideoFragment extends
         View view = inflater.inflate(R.layout.fragment_tab_list, null);
         ButterKnife.bind(this, view);
 
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.d_10)));
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.setOnLoadMoreListener(this);
-
         //上拉刷新
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -61,6 +61,25 @@ public abstract class VideoFragment extends
                 loadData(true);
             }
         });
+
+        initRecycleView();
+
+        viewCreated = true;
+        return view;
+    }
+
+    private void initRecycleView() {
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.d_10)));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerView.setOnLoadMoreListener(this);
+
+        //adapter
+        mVideoAdapter = new VideoAdapter(mContext);
+        mVideoAdapter.enableFooterView();
+        mFooterView = LayoutInflater.from(mContext).inflate(R.layout.item_footer, mRecyclerView, false);
+        mVideoAdapter.addFooterView(mFooterView);
+        mRecyclerView.setAdapter(mVideoAdapter);
+
 
         //暂时无用
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -79,7 +98,24 @@ public abstract class VideoFragment extends
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        return view;
+    }
+
+    /**
+     * 当fragment可见和不可见的时候会遇到
+     *
+     * @param isVisibleToUser
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+
+        super.setUserVisibleHint(isVisibleToUser);
+        /*if(isVisibleToUser && !isInitRefreshEnable() && isDelayRefreshEnable()) {
+            refreshData(false);
+        }*/
+        if (getUserVisibleHint() && firstLoad) {
+            lazyLoadData(true);//只在第一次加载的时候执行
+            firstLoad = false;
+        }
     }
 
     @Override
@@ -88,6 +124,27 @@ public abstract class VideoFragment extends
         presenter.refreshData(pullToRefresh);
         if (mIsFirstLoad) {
             mIsFirstLoad = false;
+        }
+    }
+
+    //标志位,是否第一次加载
+    private boolean firstLoad = true;
+    //标志位,是否view都创建好了
+    private boolean viewCreated = false;
+
+    public void lazyLoadData(final boolean pullToRefresh) {
+        if (viewCreated) {
+            loadData(pullToRefresh);
+        }else{
+            Observable.timer(50, TimeUnit.MILLISECONDS)//50ms后执行
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Long>() {
+                        @Override
+                        public void call(Long aLong) {
+                            Log.d(TAG, "Observable subscribe call->loadData");
+                            lazyLoadData(pullToRefresh);
+                        }
+                    });
         }
     }
 
@@ -110,17 +167,9 @@ public abstract class VideoFragment extends
 
     @Override
     public void setData(List<BiliDingVideo.VideoBean> data) {
-
-        if (mVideoAdapter == null) {
-            mVideoAdapter = new VideoAdapter(mContext, data);
-            mVideoAdapter.enableFooterView();
-            mFooterView = LayoutInflater.from(mContext).inflate(R.layout.item_footer, mRecyclerView, false);
-            mVideoAdapter.addFooterView(mFooterView);
-            mRecyclerView.setAdapter(mVideoAdapter);
-        } else {
-            mVideoAdapter.reset(data);
+        mVideoAdapter.reset(data);
 //            mVideoAdapter.addAll(data, 0);//从第0个开始增加
-        }
+
     }
 
     @Override

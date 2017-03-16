@@ -1,7 +1,6 @@
 package com.weituotian.video.fragment;
 
 import android.content.Context;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -12,17 +11,8 @@ import android.view.ViewGroup;
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.hannesdorfmann.mosby.mvp.lce.MvpLceFragment;
 import com.hannesdorfmann.mosby.mvp.lce.MvpLceView;
-import com.trello.rxlifecycle.LifecycleProvider;
-import com.trello.rxlifecycle.android.FragmentEvent;
 import com.weituotian.video.R;
-import com.weituotian.video.utils.UIUtil;
 import com.weituotian.video.widget.LoadingView;
-
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 /**
  * @author laohu
@@ -77,6 +67,9 @@ public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, 
         Log.d(TAG, "onViewCreated");
 
         super.onViewCreated(view, savedInstanceState);
+
+        initView();
+
         showLoading(false);
         if(isInitRefreshEnable() && !isDelayRefreshEnable()) {
             Log.d(TAG, "onViewCreated->loadData");
@@ -84,21 +77,10 @@ public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, 
         }
     }
 
+    protected abstract void initView();
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
+    /*private void refreshData(final boolean pullToRefresh) {
 
-        super.setUserVisibleHint(isVisibleToUser);
-        /*if(isVisibleToUser && !isInitRefreshEnable() && isDelayRefreshEnable()) {
-            refreshData(false);
-        }*/
-        if (getUserVisibleHint()) {
-            refreshData(false);
-        } else {
-        }
-    }
-
-    private void refreshData(final boolean pullToRefresh) {
 
         if(presenter != null) {
             Log.d(TAG, "refreshData->loadData");
@@ -116,7 +98,7 @@ public abstract class BaseFragment<CV extends View, M, V extends MvpLceView<M>, 
                         }
                     });
         }
-    }
+    }*/
 
     /**
      * Fragment数据视图

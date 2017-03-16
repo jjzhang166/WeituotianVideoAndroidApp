@@ -8,7 +8,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.weituotian.weituotianvideo"
-        minSdkVersion 15
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -48,7 +48,7 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
 
     compile 'com.trello:rxlifecycle:1.0'
-    compile 'com.trello:rxlifecycle-components:1.0'//帮助rxjava弱指针
+//    compile 'com.trello:rxlifecycle-components:1.0'//帮助rxjava弱指针
     compile 'com.trello:rxlifecycle-navi:1.0'//帮助rxjava弱指针
 
     //butterknife

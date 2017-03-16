@@ -9,7 +9,7 @@ import java.util.List;
  * @author laohu
  * @site http://ittiger.cn
  */
-public interface VideoMvpView extends MvpLceView<List<BiliDingVideo.VideoBean>> {
+public interface IVideoView extends MvpLceView<List<BiliDingVideo.VideoBean>> {
 
     void showLoadMoreErrorView();
 

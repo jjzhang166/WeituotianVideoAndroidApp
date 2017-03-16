@@ -25,6 +25,9 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
     private boolean mIsHeaderViewEnable = false;
     private boolean mIsFooterViewEnable = false;
 
+    public HeaderAndFooterAdapter() {
+    }
+
     public HeaderAndFooterAdapter(List<T> list) {
 
         mList = list;
@@ -33,9 +36,9 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
     @Override
     public final ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if(isHeaderViewEnable() && mHeaderViews.get(viewType) != null) {
+        if (isHeaderViewEnable() && mHeaderViews.get(viewType) != null) {
             return new ViewHolder(mHeaderViews.get(viewType));
-        } else if(isFooterViewEnable() && mFooterViews.get(viewType) != null) {
+        } else if (isFooterViewEnable() && mFooterViews.get(viewType) != null) {
             return new ViewHolder(mFooterViews.get(viewType));
         }
         return onCreateItemViewHolder(parent, viewType);
@@ -48,7 +51,7 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
     @Override
     public final void onBindViewHolder(ViewHolder holder, int position) {
 
-        if(isFooterView(position) || isHeaderView(position)) {
+        if (isFooterView(position) || isHeaderView(position)) {
             return;
         }
         T item = getItem(position - getHeaderViewCount());
@@ -58,10 +61,10 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
     @Override
     public final int getItemViewType(int position) {
 
-        if(isHeaderView(position)) {//FooterView
+        if (isHeaderView(position)) {//FooterView
             return mHeaderViews.keyAt(position);
         }
-        if(isFooterView(position)){//HeaderView
+        if (isFooterView(position)) {//HeaderView
             return mFooterViews.keyAt(position - getHeaderViewCount() - getItemDataCount());
         }
         return getItemViewTypeForData(position);
@@ -102,7 +105,7 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
     public void addAll(List<T> list) {
 
         int positionStart = getHeaderViewCount();
-        if(mList == null) {
+        if (mList == null) {
             mList = list;
         } else {
             positionStart += mList.size();
@@ -114,7 +117,7 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
     public void addAll(List<T> list, int position) {
 
         int positionStart = getHeaderViewCount() + position;
-        if(mList == null) {
+        if (mList == null) {
             mList = list;
         } else {
             mList.addAll(positionStart, list);
@@ -124,7 +127,7 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
 
     public void add(T item) {
 
-        if(mList == null) {
+        if (mList == null) {
             mList = new ArrayList<>(1);
         }
         int size = getItemDataCount();
@@ -134,16 +137,16 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
 
     public void add(T item, int position) {
 
-        if(mList == null) {
+        if (mList == null) {
             mList = new ArrayList<>();
         }
         mList.add(position, item);
         notifyItemInserted(position);
     }
 
-    public void update(T item , int position) {
+    public void update(T item, int position) {
 
-        if(mList == null) {
+        if (mList == null) {
             mList = new ArrayList<>();
         }
         mList.set(position, item);
@@ -151,8 +154,12 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
     }
 
     public void reset(List<T> list) {
-        mList.clear();
-        mList.addAll(list);
+        if (mList == null) {
+            mList = list;
+        } else {
+            mList.clear();
+            mList.addAll(list);
+        }
 //        mList = list;
         notifyDataSetChanged();
     }
@@ -291,7 +298,7 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
      */
     public void addHeaderView(View headerView) {
 
-        if(headerView == null) {
+        if (headerView == null) {
             throw new NullPointerException("headerView is null");
         }
         mHeaderViews.put(TYPE_HEADER + getHeaderViewCount(), headerView);
@@ -305,7 +312,7 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
      */
     public void addFooterView(View footerView) {
 
-        if(footerView == null) {
+        if (footerView == null) {
             throw new NullPointerException("footerView is null");
         }
         mFooterViews.put(TYPE_FOOTER + getFooterViewCount(), footerView);
@@ -317,7 +324,7 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
 
         super.onAttachedToRecyclerView(recyclerView);
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-        if(layoutManager instanceof GridLayoutManager) {
+        if (layoutManager instanceof GridLayoutManager) {
             ((GridLayoutManager) layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
@@ -333,9 +340,9 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
 
         super.onViewAttachedToWindow(holder);
         int position = holder.getLayoutPosition();
-        if(isHeaderView(position) || isFooterView(position)) {
+        if (isHeaderView(position) || isFooterView(position)) {
             final ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-            if(layoutParams != null && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
+            if (layoutParams != null && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
                 StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) layoutParams;
                 lp.setFullSpan(true);
             }
@@ -344,7 +351,7 @@ public abstract class HeaderAndFooterAdapter<T> extends RecyclerView.Adapter<Vie
 
     private int getNewSpanSize(int spanCount, int position) {
 
-        if(isHeaderView(position) || isFooterView(position)) {
+        if (isHeaderView(position) || isFooterView(position)) {
             return spanCount;
         }
 

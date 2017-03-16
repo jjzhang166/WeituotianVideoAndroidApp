@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.weituotian.video.fragment.BaseFragment;
 import com.weituotian.video.fragment.BiliFragment;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Set;
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
     private String[] TITLES;
-    private Fragment[] fragments;
+    private BaseFragment[] fragments;
 
     /*private List<String> tabIndicators;
     private Set<Fragment> tabFragments;*/
@@ -24,7 +25,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     public MainPagerAdapter(FragmentManager fm) {
         super(fm);
         TITLES = new String[]{"json1", "json2", "json3"};
-        fragments = new Fragment[TITLES.length];
+        fragments = new BaseFragment[TITLES.length];
     }
 
     @Override
@@ -35,16 +36,23 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
                     fragments[position] = BiliFragment.newInstance(1);
                     break;
                 case 1:
-                    fragments[position] = BiliFragment.newInstance(2);
+                    fragments[position] = BiliFragment.newInstance(4);
                     break;
                 case 2:
-                    fragments[position] = BiliFragment.newInstance(4);
+                    fragments[position] = BiliFragment.newInstance(12);
                     break;
                 default:
                     break;
             }
         }
         return fragments[position];
+    }
+
+    public void refreshData(int position) {
+        if (fragments[position] != null) {
+            //让那个fragment上拉刷新数据
+            fragments[position].loadData(true);
+        }
     }
 
     @Override

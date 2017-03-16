@@ -12,7 +12,7 @@ import com.weituotian.video.R;
  * Created by ange on 2017/3/12.
  */
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity{
 
     public Toolbar mToolbar;
 
@@ -26,10 +26,11 @@ public class BaseActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.tb_toolbar);
         if (mToolbar != null) {
+            mToolbar.setTitle("");
             setSupportActionBar(mToolbar);
 
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setHomeButtonEnabled(true);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
