@@ -9,7 +9,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author laohu
@@ -37,6 +37,8 @@ public class RetrofitFactory {
 
     private static RxJavaCallAdapterFactory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
 
+    private static GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create();
+
     private static OkHttpClient.Builder getOkhttpBuilder() {
         return new OkHttpClient.Builder()
                 .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
@@ -48,7 +50,8 @@ public class RetrofitFactory {
 
     private static Retrofit.Builder getRetrofitBuilder() {
         return new Retrofit.Builder()
-                .addConverterFactory(ScalarsConverterFactory.create())
+//                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJavaCallAdapterFactory);
     }
 
@@ -81,7 +84,7 @@ public class RetrofitFactory {
         OkHttpClient client = getOkhttpBuilder().build();
 
         Retrofit retrofit = getRetrofitBuilder()
-                .baseUrl(BILI_BASE_URL)
+                .baseUrl("http://localhost:8080/webx/")
                 .client(client)
                 .build();
         return retrofit.create(IUserService.class);

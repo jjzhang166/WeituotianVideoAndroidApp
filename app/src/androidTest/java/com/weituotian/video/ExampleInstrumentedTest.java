@@ -4,8 +4,16 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.weituotian.video.entity.RetInfo;
+import com.weituotian.video.entity.User;
+import com.weituotian.video.factory.RetrofitFactory;
+import com.weituotian.video.presenter.LoginPresenter;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import retrofit2.adapter.rxjava.Result;
+import rx.Observable;
 
 import static org.junit.Assert.*;
 
@@ -23,4 +31,5 @@ public class ExampleInstrumentedTest {
 
         assertEquals("com.weituotian.weituotianvideo", appContext.getPackageName());
     }
+
 }

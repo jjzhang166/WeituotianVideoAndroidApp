@@ -21,5 +21,4 @@ public interface BiliApi {
     @GET("index/ding/{index}.json")
     Observable<String> getVideos(@Path("index") int index);
 
-    Observable<Result<User>> getVideos2(@Path("index") int index);
 }
