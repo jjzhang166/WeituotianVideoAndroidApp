@@ -9,6 +9,7 @@
 
 
     <application
+        android:name=".VideoApp"
         android:hardwareAccelerated="false"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,6 +22,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".activity.LoginActivity">
+
         </activity>
     </application>
 

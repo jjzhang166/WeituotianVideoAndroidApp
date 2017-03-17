@@ -1,0 +1,6 @@
+- app登录activity状态保存,保存用户名
+- 网络访问错误信息处理,404,500等
+- 登录的activity的xml加强长度验证
+- 做网络操作的按钮点击后显示进度条
+- mainactivity的布局添加framelayout,将appbar和viewpager移到新fragment
+- 菜单点击没有动画

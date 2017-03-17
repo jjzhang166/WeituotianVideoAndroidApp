@@ -12,6 +12,7 @@ import com.weituotian.video.mvpview.IVideoView;
 
 import java.util.List;
 
+import retrofit2.adapter.rxjava.Result;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,28 +24,8 @@ import rx.subjects.BehaviorSubject;
  * @author laohu
  * @site http://ittiger.cn
  */
-public abstract class VideoPresenter extends MvpBasePresenter<IVideoView>
-        implements TypePresenter, LifecycleProvider<Integer> {
-
-    private final BehaviorSubject<Integer> lifecycleSubject = BehaviorSubject.create();
-
-    @Override
-    @NonNull
-    public final Observable<Integer> lifecycle() {
-        return lifecycleSubject.asObservable();
-    }
-
-    @Override
-    @NonNull
-    public final <T> LifecycleTransformer<T> bindUntilEvent(@NonNull Integer event) {
-        return RxLifecycle.bindUntilEvent(lifecycleSubject, event);
-    }
-
-    @Override
-    @NonNull
-    public final <T> LifecycleTransformer<T> bindToLifecycle() {
-        return RxLifecyclePresenter.bindPresenter(lifecycleSubject);
-    }
+public abstract class VideoPresenter extends BasePresenter<IVideoView>
+        implements TypePresenter {
 
     private int mCurPage = 1;
 
@@ -63,48 +44,47 @@ public abstract class VideoPresenter extends MvpBasePresenter<IVideoView>
      * 加载更多数据
      */
     public void loadMoreData() {
-
         request(true, false);
     }
 
     @Override
     public void attachView(IVideoView view) {
         super.attachView(view);
-        lifecycleSubject.onNext(PresenterEvent.ATTACH);
     }
 
     @Override
     public void detachView(boolean retainInstance) {
-
         super.detachView(retainInstance);
         mCurPage = 1;
-        lifecycleSubject.onNext(PresenterEvent.DETACH);
     }
 
-    public abstract Observable<String> getHttpCallObservable(int curPage);
+    public abstract Observable<Result<BiliDingVideo>> getHttpCallObservable(int curPage);
 
     void request(final boolean loadMore, final boolean pullToRefresh) {
 
         getHttpCallObservable(mCurPage)
-                .map(new Func1<String, List<BiliDingVideo.VideoBean>>() {
-
+                .flatMap(new Func1<Result<BiliDingVideo>, Observable<BiliDingVideo>>() {
                     @Override
-                    public List<BiliDingVideo.VideoBean> call(String result) {
-
-                        Gson gson = new Gson();
-                        BiliDingVideo dingVideo = gson.fromJson(result, BiliDingVideo.class);
-                        return dingVideo.getList().subList(0, 5);//提取5个，测试用
-
+                    public Observable<BiliDingVideo> call(Result<BiliDingVideo> result) {
+                        if (result.isError()) {
+                            return Observable.error(new NullPointerException("网络连接错误"));
+                        }
+                        return Observable.just(result.response().body());
                     }
                 })
-                .flatMap(new Func1<List<BiliDingVideo.VideoBean>, Observable<List<BiliDingVideo.VideoBean>>>() {
-                    @Override
-                    public Observable<List<BiliDingVideo.VideoBean>> call(List<BiliDingVideo.VideoBean> videos) {
+                .flatMap(new Func1<BiliDingVideo, Observable<List<BiliDingVideo.VideoBean>>>() {
 
-                        if (videos == null || videos.size() == 0) {
+                    @Override
+                    public Observable<List<BiliDingVideo.VideoBean>> call(BiliDingVideo dingVideo) {
+                        List<BiliDingVideo.VideoBean> videos = dingVideo.getList();
+
+                        if (dingVideo.getCode() != 0) {
                             return Observable.error(new NullPointerException("not load video data"));
                         }
-                        return Observable.just(videos);
+                        /*if (videos == null || videos.size() == 0) {
+                            return Observable.error(new NullPointerException("not load video data"));
+                        }*/
+                        return Observable.just(dingVideo.getList().subList(0, 5));//提取5个，测试用
                     }
                 })
                 .subscribeOn(Schedulers.io())//以上运行在io进程

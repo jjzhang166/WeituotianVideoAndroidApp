@@ -32,4 +32,16 @@ public class ExampleInstrumentedTest {
         assertEquals("com.weituotian.weituotianvideo", appContext.getPackageName());
     }
 
+    @Test
+    public void testCookies() {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        RetrofitFactory.initCookieJar(appContext);
+
+        String username = "weituotian";
+        String password = "1q2w3e4r";
+
+        Observable<Result<RetInfo<User>>> resultObservable = RetrofitFactory.getUserService().doLogin(username, password);
+        LoginPresenter basePresenter = new LoginPresenter();
+        basePresenter.doLogin(username, password);
+    }
 }

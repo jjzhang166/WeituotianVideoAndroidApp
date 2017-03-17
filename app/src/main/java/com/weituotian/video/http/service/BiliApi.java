@@ -1,5 +1,6 @@
 package com.weituotian.video.http.service;
 
+import com.weituotian.video.entity.BiliDingVideo;
 import com.weituotian.video.entity.User;
 
 import retrofit2.adapter.rxjava.Result;
@@ -19,6 +20,6 @@ import rx.Observable;
 public interface BiliApi {
 
     @GET("index/ding/{index}.json")
-    Observable<String> getVideos(@Path("index") int index);
+    Observable<Result<BiliDingVideo>> getVideos(@Path("index") int index);
 
 }

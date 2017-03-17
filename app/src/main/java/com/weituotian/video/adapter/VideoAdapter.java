@@ -54,6 +54,7 @@ public class VideoAdapter extends HeaderAndFooterAdapter<BiliDingVideo.VideoBean
                 .into(videoViewHolder.civCover);
         videoViewHolder.tvTime.setText(item.getCreate());
         videoViewHolder.tvTitle.setText(item.getTitle());
+        videoViewHolder.tvContent.setText(item.getDescription());
         videoViewHolder.setPosition(position);
 //        videoViewHolder.itemView.setTag(R.id.tag_video_list_item, VideoPlayState.STOP);
     }

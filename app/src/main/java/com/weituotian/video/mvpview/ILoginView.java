@@ -10,4 +10,7 @@ import com.weituotian.video.entity.User;
 
 public interface ILoginView extends MvpView {
 
+    void showLoginFail(String msg);
+
+    void showLoginSuccess();
 }

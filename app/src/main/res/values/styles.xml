@@ -14,4 +14,10 @@
         <item name="overlapAnchor">false</item>
     </style>
 
+    <!--菜单的一项-->
+    <style name="menu_item">
+        <item name="android:textColor">#a000</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

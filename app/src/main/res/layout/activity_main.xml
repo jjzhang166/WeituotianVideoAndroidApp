@@ -47,7 +47,7 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/ll_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -61,7 +61,18 @@
             android:layout_height="wrap_content"
             android:text="Hello World!" />
 
-    </LinearLayout>
+    </LinearLayout>-->
+
+    <android.support.design.widget.NavigationView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/nv_main"
+        android:layout_width="288.0dip"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/header_menu"
+        app:itemTextAppearance="@style/menu_item"
+        app:menu="@menu/drawer_items" />
 
 
 </android.support.v4.widget.DrawerLayout>

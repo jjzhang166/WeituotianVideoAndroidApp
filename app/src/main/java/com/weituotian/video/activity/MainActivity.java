@@ -1,20 +1,23 @@
 package com.weituotian.video.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.weituotian.video.R;
 import com.weituotian.video.adapter.MainPagerAdapter;
+import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.widget.CircleImageView;
 
 import butterknife.BindView;
@@ -41,11 +44,17 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.fab_refresh)
     FloatingActionButton mFloatButton;
 
-    @BindView(R.id.ll_menu)
-    LinearLayout mMenu;
+//    @BindView(R.id.ll_menu)
+//    LinearLayout mMenu;
 
     @BindView(R.id.dl_main)
     DrawerLayout mRoot;
+
+    @BindView(R.id.tv_username)
+    TextView tvUsername;
+
+    @BindView(R.id.nv_main)
+    NavigationView nvMenu;
 
 
     private MainPagerAdapter contentAdapter;
@@ -71,6 +80,15 @@ public class MainActivity extends BaseActivity {
         initDrawer();
         initContent();
         initTab();//初始化选项卡
+
+        initLogin();
+        mFloatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int curPosition = mViewPager.getCurrentItem();
+                contentAdapter.refreshData(curPosition);
+            }
+        });
     }
 
     private void initDrawer() {
@@ -81,8 +99,8 @@ public class MainActivity extends BaseActivity {
 
         //设置侧边栏的宽度
         DrawerLayout.LayoutParams layoutParams = null;
-        if (mMenu != null) {
-            layoutParams = (DrawerLayout.LayoutParams) mMenu.getLayoutParams();
+        if (nvMenu != null) {
+            layoutParams = (DrawerLayout.LayoutParams) nvMenu.getLayoutParams();
             layoutParams.width = getScreenSize()[0] / 4 * 3;
         }
 
@@ -122,25 +140,62 @@ public class MainActivity extends BaseActivity {
         mTabs.setupWithViewPager(mViewPager);
     }
 
+    private void initLogin(){
+        //加载用户
+        LoginContext.loadUser(getApplicationContext());
+        if (LoginContext.isLogin()) {
+            //已登录
+            setLogin();
+        }
+    }
+
+    private void setLogin(){
+        tvUsername.setText(LoginContext.user.getName());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_LOGIN://登录
+                if (LoginContext.isLogin()) {
+                    //已登录
+                    setLogin();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * DrawerLayout侧滑菜单开关
      */
-    @OnClick(R.id.toolbar_user_avatar)
+    @OnClick({R.id.toolbar_user_avatar, R.id.tv_username})
     public void toggleDrawer() {
-        if (mRoot.isDrawerOpen(GravityCompat.START)) {
-            mRoot.closeDrawer(GravityCompat.START);
+        if (LoginContext.isLogin()) {
+            //已登录
+            if (mRoot.isDrawerOpen(GravityCompat.START)) {
+                mRoot.closeDrawer(GravityCompat.START);
+            } else {
+                mRoot.openDrawer(GravityCompat.START);
+            }
         } else {
-            mRoot.openDrawer(GravityCompat.START);
+            //未登录
+            Intent in = new Intent(MainActivity.this, LoginActivity.class);
+            in.putExtra("a", "a");
+            startActivityForResult(in, REQUEST_CODE_LOGIN);
         }
     }
 
     /**
      * floating button,点击刷新viewpager的fragment的数据
      */
-    @OnClick(R.id.toolbar_user_avatar)
-    public void refreshFragmentData(){
-        int curPosition = mViewPager.getCurrentItem();
-        contentAdapter.refreshData(curPosition);
-    }
+    /*@OnClick(R.id.fab_refresh)
+    public void refreshFragmentData() {
+
+    }*/
+
+    private final int REQUEST_CODE_LOGIN = 1;
 
 }

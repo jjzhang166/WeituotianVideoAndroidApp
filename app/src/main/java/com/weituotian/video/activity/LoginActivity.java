@@ -1,5 +1,6 @@
 package com.weituotian.video.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.widget.Button;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.weituotian.video.R;
+import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.mvpview.ILoginView;
 import com.weituotian.video.presenter.LoginPresenter;
 import com.weituotian.video.utils.UIUtil;
@@ -44,6 +46,8 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        Intent intent = getIntent();//获得从mainactivity传来的数据
     }
 
     @NonNull
@@ -59,7 +63,7 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
      */
     @OnClick(R.id.bt_login)
     public void onClickLogin(View v) {
-        if (verifyEmail()) {
+        if ((etUsername).getText().toString().length() >= 6) {//verifyEmail()
             tilMobile.setErrorEnabled(false);
             presenter.doLogin(etUsername.getText().toString(), etPassword.getText().toString());
 //            UIUtil.showToast(this, "Success");
@@ -75,4 +79,17 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
         return matcher.matches();
     }
 
+    @Override
+    public void showLoginFail(String msg) {
+        UIUtil.showToast(this, msg);
+    }
+
+    @Override
+    public void showLoginSuccess() {
+        UIUtil.showToast(this, "登录成功");
+        Intent intent = new Intent();
+        intent.putExtra("a", "a");
+        setResult(2, intent);//返回给mainactivity使用
+        this.finish();
+    }
 }
