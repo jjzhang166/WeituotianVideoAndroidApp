@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:checkableBehavior="single">
     <group
         android:id="@+id/nav_group1"
@@ -10,6 +9,16 @@
             android:checkable="true"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/nav_home" />
+        <item
+            android:id="@+id/nav_upload"
+            android:checkable="true"
+            android:icon="@drawable/ic_cloud_upload_black_24dp"
+            android:title="@string/nav_upload" />
+        <item
+            android:id="@+id/nav_admin"
+            android:checkable="true"
+            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:title="@string/nav_admin" />
     </group>
     <group
         android:id="@+id/nav_group2"
@@ -41,5 +50,12 @@
             android:checkable="true"
             android:icon="@drawable/ic_help_black_24dp"
             android:title="@string/navhelp" />
+    </group>
+    <group android:id="@+id/nav_group4">
+        <item
+            android:id="@+id/nav_logout"
+            android:checkable="true"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="@string/nav_logout" />
     </group>
 </menu>

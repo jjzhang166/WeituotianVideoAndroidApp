@@ -26,6 +26,12 @@
         <activity android:name=".activity.LoginActivity">
 
         </activity>
+        <activity android:name=".activity.UploadActivity">
+
+        </activity>
+        <activity android:name=".activity.BrowserActivity">
+
+        </activity>
     </application>
 
 </manifest>

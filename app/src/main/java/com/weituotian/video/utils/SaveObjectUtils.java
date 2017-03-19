@@ -52,9 +52,12 @@ public class SaveObjectUtils {
      * @param key
      * @param object
      */
-    public void setObject(String key, Object object) {
+    public boolean setObject(String key, Object object) {
         SharedPreferences sp = this.context.getSharedPreferences(this.name, Context.MODE_PRIVATE);
-
+        if (object == null) {
+            SharedPreferences.Editor editor = sp.edit().remove(key);
+            return editor.commit();
+        }
         //创建字节输出流
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         //创建字节对象输出流
@@ -66,15 +69,13 @@ public class SaveObjectUtils {
             String objectVal = new String(Base64.encode(baos.toByteArray(), Base64.DEFAULT));
             SharedPreferences.Editor editor = sp.edit();
             editor.putString(key, objectVal);
-            editor.commit();
-
+            return editor.commit();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         } finally {
             try {
-                if (baos != null) {
-                    baos.close();
-                }
+                baos.close();
                 if (out != null) {
                     out.close();
                 }
@@ -97,17 +98,11 @@ public class SaveObjectUtils {
                 ois = new ObjectInputStream(bais);
                 T t = (T) ois.readObject();
                 return t;
-            } catch (StreamCorruptedException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             } finally {
                 try {
-                    if (bais != null) {
-                        bais.close();
-                    }
+                    bais.close();
                     if (ois != null) {
                         ois.close();
                     }

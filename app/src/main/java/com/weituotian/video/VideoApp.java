@@ -21,8 +21,8 @@ public class VideoApp extends Application {
     }
 
     private void init() {
-
-        RetrofitFactory.initCookieJar(getApplicationContext());
+        LoginContext.init(getApplicationContext());
+        RetrofitFactory.initCookieJar(LoginContext.setCookieCache, LoginContext.sharedPrefsCookiePersistor);
     }
 
     public static VideoApp getInstance() {

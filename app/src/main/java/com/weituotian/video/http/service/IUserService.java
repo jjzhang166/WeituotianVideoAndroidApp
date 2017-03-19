@@ -17,4 +17,9 @@ public interface IUserService {
     @POST("api/login")
     Observable<Result<RetInfo<User>>> doLogin(@Query("username") String username, @Query("password") String password);
 
+    @POST("api/logout")
+    Observable<Result<RetInfo<String>>> logout();
+
+    @POST("api/touch")
+    Observable<Result<RetInfo<User>>> touch();
 }

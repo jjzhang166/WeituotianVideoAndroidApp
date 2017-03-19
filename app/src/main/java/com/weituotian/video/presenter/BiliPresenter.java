@@ -3,6 +3,7 @@ package com.weituotian.video.presenter;
 import com.weituotian.video.entity.BiliDingVideo;
 import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.http.DataType;
+import com.weituotian.video.presenter.base.VideoPresenter;
 
 import retrofit2.adapter.rxjava.Result;
 import rx.Observable;

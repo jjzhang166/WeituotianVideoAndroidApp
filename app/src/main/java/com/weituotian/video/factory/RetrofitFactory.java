@@ -31,6 +31,7 @@ public class RetrofitFactory {
 
     private static final int TIME_OUT = 12;//超时时间
     private static final String BILI_BASE_URL = "http://www.bilibili.com/";
+    public static final String BASE_SERVER_URL = "http://192.168.1.107:8080/webx/";
 
     private static volatile BiliApi sBiliApi;
     private static volatile IUserService userService;
@@ -40,18 +41,13 @@ public class RetrofitFactory {
 
     private static GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create();
 
-    //管理cookies的缓存
-    private static SetCookieCache setCookieCache;
-    private static SharedPrefsCookiePersistor sharedPrefsCookiePersistor;
+
     private static ClearableCookieJar cookieJar;
 
     /**
      * 初始化okhttp的cookjar
-     * @param context application context
      */
-    public static void initCookieJar(Context context) {
-        setCookieCache = new SetCookieCache();
-        sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(context);
+    public static void initCookieJar(SetCookieCache setCookieCache, SharedPrefsCookiePersistor sharedPrefsCookiePersistor) {
         cookieJar = new PersistentCookieJar(setCookieCache, sharedPrefsCookiePersistor);
     }
 

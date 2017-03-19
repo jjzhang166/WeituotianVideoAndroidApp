@@ -1,20 +1,16 @@
 package com.weituotian.video.presenter;
 
-import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
-import com.weituotian.video.VideoApp;
 import com.weituotian.video.entity.RetInfo;
 import com.weituotian.video.entity.User;
 import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.mvpview.ILoginView;
-import com.weituotian.video.utils.SaveObjectUtils;
+import com.weituotian.video.presenter.base.BasePresenter;
 
 import retrofit2.adapter.rxjava.Result;
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 

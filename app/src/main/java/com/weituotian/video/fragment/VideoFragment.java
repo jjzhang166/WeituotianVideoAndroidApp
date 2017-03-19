@@ -13,7 +13,7 @@ import com.weituotian.video.R;
 import com.weituotian.video.adapter.VideoAdapter;
 import com.weituotian.video.entity.BiliDingVideo;
 import com.weituotian.video.mvpview.IVideoView;
-import com.weituotian.video.presenter.VideoPresenter;
+import com.weituotian.video.presenter.base.VideoPresenter;
 import com.weituotian.video.utils.UIUtil;
 import com.weituotian.video.widget.recycler.CommonRecyclerView;
 import com.weituotian.video.widget.recycler.SpacesItemDecoration;

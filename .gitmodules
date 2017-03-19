@@ -1,0 +1,3 @@
+[submodule "moudle"]
+	path = moudle
+	url = https://git.oschina.net/weituotian/VideoPickerAndScreenShot.git

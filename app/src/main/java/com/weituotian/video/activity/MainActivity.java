@@ -2,6 +2,7 @@ package com.weituotian.video.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -11,20 +12,37 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.weituotian.video.R;
 import com.weituotian.video.adapter.MainPagerAdapter;
+import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.http.LoginContext;
+import com.weituotian.video.mvpview.ILoginView;
+import com.weituotian.video.mvpview.IMainView;
+import com.weituotian.video.presenter.LoginPresenter;
+import com.weituotian.video.presenter.MainPresenter;
+import com.weituotian.video.presenter.func1.ResultToEntityFunc1;
+import com.weituotian.video.utils.UIUtil;
 import com.weituotian.video.widget.CircleImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> implements IMainView {
+
+    private final int REQUEST_CODE_LOGIN = 1;
+    private final int REQUEST_CODE_BROSWER = 1;
 
     @BindView(R.id.toolbar_user_avatar)
     CircleImageView mUserAvatar;
@@ -44,11 +62,8 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.fab_refresh)
     FloatingActionButton mFloatButton;
 
-//    @BindView(R.id.ll_menu)
-//    LinearLayout mMenu;
-
     @BindView(R.id.dl_main)
-    DrawerLayout mRoot;
+    DrawerLayout mDrawerLayout;
 
     @BindView(R.id.tv_username)
     TextView tvUsername;
@@ -59,29 +74,28 @@ public class MainActivity extends BaseActivity {
 
     private MainPagerAdapter contentAdapter;
 
-    /*private DrawerLayout mRoot;
-    private ActionBarDrawerToggle drawerToggle;
-    private LinearLayout mMenu;
-
-    private TabLayout mTabs;//TabLayout
-
-
-    private ViewPager mViewPager;//ViewPager
-    private MainPagerAdapter contentAdapter;
-
-    private FloatingActionButton mFloatbutton;*/
+    private long exitTime;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+    public int getContentViewId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void initAllMembersView(Bundle savedInstanceState) {
+        //toolbar
+        if (mToolbar != null) {
+            mToolbar.setTitle("");
+            setSupportActionBar(mToolbar);
+        }
 
         initDrawer();
         initContent();
         initTab();//初始化选项卡
-
+        initMenu();
         initLogin();
+
+        //butter knife绑定flotingactionbutton的onclick无效,这里手动注册
         mFloatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,10 +105,16 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    @NonNull
+    @Override
+    public MainPresenter createPresenter() {
+        return new MainPresenter();
+    }
+
     private void initDrawer() {
-//        this.mRoot = (DrawerLayout) findViewById(R.id.dl_main);
-//        drawerToggle = new ActionBarDrawerToggle(this, mRoot, R.string.app_name, R.string.app_name);
-//        mRoot.addDrawerListener(drawerToggle);
+//        this.mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
+//        drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.app_name, R.string.app_name);
+//        mDrawerLayout.addDrawerListener(drawerToggle);
 //        this.mMenu = (LinearLayout) findViewById(R.id.ll_menu);
 
         //设置侧边栏的宽度
@@ -140,17 +160,61 @@ public class MainActivity extends BaseActivity {
         mTabs.setupWithViewPager(mViewPager);
     }
 
-    private void initLogin(){
-        //加载用户
-        LoginContext.loadUser(getApplicationContext());
-        if (LoginContext.isLogin()) {
-            //已登录
-            setLogin();
-        }
+    private void initMenu() {
+        nvMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_upload:
+
+                        break;
+                    case R.id.nav_admin:
+                        //打开我的后台
+                        Intent in = new Intent(MainActivity.this, BrowserActivity.class);
+                        in.putExtra("type", BrowserActivity.TYPE_SYSTEM);
+                        startActivityForResult(in, REQUEST_CODE_BROSWER);
+                        break;
+                    case R.id.nav_logout:
+                        RetrofitFactory.getUserService().logout()
+                                .flatMap(new ResultToEntityFunc1<String>())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Subscriber<String>() {
+                                    @Override
+                                    public void onCompleted() {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        UIUtil.showToast(MainActivity.this, e.getMessage());
+                                    }
+
+                                    @Override
+                                    public void onNext(String str) {
+                                        UIUtil.showToast(MainActivity.this, str);
+                                        LoginContext.logout();
+                                    }
+                                });
+                        break;
+                    default:
+                        break;
+                }
+
+                item.setCheckable(true);//设置选项可选
+                item.setChecked(true);//设置选型被选中
+                mDrawerLayout.closeDrawers();//关闭侧边菜单栏
+
+                //true to display the item as the selected item
+                return true;
+            }
+        });
     }
 
-    private void setLogin(){
-        tvUsername.setText(LoginContext.user.getName());
+    private void initLogin() {
+        if (LoginContext.hasLoginBefore(this)) {
+            presenter.touch();
+        }
     }
 
     @Override
@@ -175,10 +239,10 @@ public class MainActivity extends BaseActivity {
     public void toggleDrawer() {
         if (LoginContext.isLogin()) {
             //已登录
-            if (mRoot.isDrawerOpen(GravityCompat.START)) {
-                mRoot.closeDrawer(GravityCompat.START);
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             } else {
-                mRoot.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(GravityCompat.START);
             }
         } else {
             //未登录
@@ -189,6 +253,54 @@ public class MainActivity extends BaseActivity {
     }
 
     /**
+     * 监听back键处理DrawerLayout和SearchView
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mDrawerLayout.isDrawerOpen(mDrawerLayout.getChildAt(1))) {
+                mDrawerLayout.closeDrawers();
+            } else {
+                exitApp();
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 双击退出App
+     */
+    private void exitApp() {
+
+        if (System.currentTimeMillis() - exitTime > 2000) {
+            UIUtil.showToast(this, "再按一次退出");
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+        }
+    }
+
+
+    /* 以下实现了IMainView的接口 */
+
+    public void setLogin() {
+        UIUtil.showToast(this, "欢迎回来哦");
+        tvUsername.setText(LoginContext.user.getName());
+    }
+
+    public void setNoLogin(String msg) {
+        UIUtil.showToast(this, msg);
+        tvUsername.setText("未登录");
+    }
+
+    @Override
+    public void onLoginError(Throwable e) {
+        UIUtil.showToast(this, e.getMessage());
+    }
+
+    /**
      * floating button,点击刷新viewpager的fragment的数据
      */
     /*@OnClick(R.id.fab_refresh)
@@ -196,6 +308,5 @@ public class MainActivity extends BaseActivity {
 
     }*/
 
-    private final int REQUEST_CODE_LOGIN = 1;
 
 }

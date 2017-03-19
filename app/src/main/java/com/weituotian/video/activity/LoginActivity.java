@@ -40,7 +40,6 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
     @BindView(R.id.et_password)
     TextInputEditText etPassword;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

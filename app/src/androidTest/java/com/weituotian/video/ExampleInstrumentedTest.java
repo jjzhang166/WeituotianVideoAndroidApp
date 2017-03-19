@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.weituotian.video.entity.RetInfo;
 import com.weituotian.video.entity.User;
 import com.weituotian.video.factory.RetrofitFactory;
@@ -35,7 +37,9 @@ public class ExampleInstrumentedTest {
     @Test
     public void testCookies() {
         Context appContext = InstrumentationRegistry.getTargetContext();
-        RetrofitFactory.initCookieJar(appContext);
+        SetCookieCache setCookieCache = new SetCookieCache();
+        SharedPrefsCookiePersistor sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(appContext);
+        RetrofitFactory.initCookieJar(setCookieCache,sharedPrefsCookiePersistor);
 
         String username = "weituotian";
         String password = "1q2w3e4r";
