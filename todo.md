@@ -4,3 +4,4 @@
 - 做网络操作的按钮点击后显示进度条
 - mainactivity的布局添加framelayout,将appbar和viewpager移到新fragment
 - 菜单点击没有动画
+- retrofit缓存,暂停或者取消

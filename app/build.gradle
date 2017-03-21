@@ -35,6 +35,9 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:cardview-v7:23.4.0'
 
+    //流式布局
+    compile 'com.zhy:flowlayout-lib:1.0.3'
+
     compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
 //    compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'io.reactivex:rxjava:1.1.6'
@@ -47,6 +50,10 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.1.2'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+
+    compile ('com.zhy:okhttputils:2.6.2',{
+        exclude group:'com.squareup.okhttp3', module:'okhttp'
+    })
 
     compile 'com.trello:rxlifecycle:1.0'
 //    compile 'com.trello:rxlifecycle-components:1.0'//帮助rxjava弱指针
@@ -62,6 +69,10 @@ dependencies {
     //mosby
     compile 'com.hannesdorfmann.mosby:mvp:2.0.1'
     compile 'com.hannesdorfmann.mosby:viewstate:2.0.1'
+
+    compile ('com.afollestad.material-dialogs:core:0.9.1.0',{
+        exclude group:'com.android.support'
+    })
 
     compile project(':videoScreenShot')
 }

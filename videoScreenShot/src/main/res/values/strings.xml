@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">MyCommonVideo</string>
     <string name="screen_shot">截图</string>
-    <string name="open_video">打开视频</string>
+    <string name="open_video">选择视频</string>
 </resources>

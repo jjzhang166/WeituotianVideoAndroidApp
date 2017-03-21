@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_upload"
+        android:icon="@drawable/ic_cloud_upload_black_24dp"
+        android:orderInCategory="100"
+        android:title="@string/menu_upload"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_refresh_purple_a400_18dp"
+        android:orderInCategory="100"
+        android:title="@string/menu_search"
+        app:showAsAction="always" />
+</menu>

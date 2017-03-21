@@ -1,5 +1,7 @@
 package com.weituotian.video.presenter.func1;
 
+import android.util.Log;
+
 import com.weituotian.video.entity.RetInfo;
 
 import retrofit2.adapter.rxjava.Result;
@@ -13,9 +15,10 @@ import rx.functions.Func1;
 /**
  * 第二版
  * 将Result<RetInfo<E>>处理为Observable<E>
+ *
  * @param <E> 实体类
  */
-public class ResultToEntityFunc1<E> implements Func1<Result<RetInfo<E>>, Observable<E>>{
+public class ResultToEntityFunc1<E> implements Func1<Result<RetInfo<E>>, Observable<E>> {
 
     /**
      * @param result 使用RetInfo<>包装了E实体类
@@ -23,6 +26,7 @@ public class ResultToEntityFunc1<E> implements Func1<Result<RetInfo<E>>, Observa
      */
     @Override
     public Observable<E> call(Result<RetInfo<E>> result) {
+        Log.i("ResultToEntityFunc1", "ResultToEntityFunc1调用,将Result<RetInfo<E>>处理为Observable<E>");
         if (result.isError()) {
             return Observable.error(result.error());
         }
@@ -38,17 +42,20 @@ public class ResultToEntityFunc1<E> implements Func1<Result<RetInfo<E>>, Observa
 /**
  * 第一版
  * 将Result<RetInfo<E>>处理为Observable<E>
+ *
  * @param <RET> 继承RetInfo类
  * @param <E> 实体类
+ * @param result 使用RetInfo<>包装了E实体类
+ * @return Observable<E>
  */
 /*
 public class ResultToEntityFunc1<RET extends RetInfo<E>,E> implements Func1<Result<RET>, Observable<E>>{
 
     */
 /**
-     * @param result 使用RetInfo<>包装了E实体类
-     * @return Observable<E>
-     *//*
+ * @param result 使用RetInfo<>包装了E实体类
+ * @return Observable<E>
+ *//*
 
     @Override
     public Observable<E> call(Result<RET> result) {

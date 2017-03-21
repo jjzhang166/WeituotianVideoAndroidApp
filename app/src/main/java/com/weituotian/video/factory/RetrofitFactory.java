@@ -1,23 +1,25 @@
 package com.weituotian.video.factory;
 
-import android.content.Context;
-
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.weituotian.video.VideoApp;
 import com.weituotian.video.http.service.BiliApi;
 import com.weituotian.video.http.service.IUserService;
+import com.weituotian.video.http.service.IVideoService;
+import com.weituotian.video.utils.CommonUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
-import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -35,20 +37,49 @@ public class RetrofitFactory {
 
     private static volatile BiliApi sBiliApi;
     private static volatile IUserService userService;
-
+    private static volatile IVideoService videoService;
 
     private static RxJavaCallAdapterFactory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
 
     private static GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create();
 
 
-    private static ClearableCookieJar cookieJar;
+    public static ClearableCookieJar cookieJar;
 
     /**
      * 初始化okhttp的cookjar
      */
     public static void initCookieJar(SetCookieCache setCookieCache, SharedPrefsCookiePersistor sharedPrefsCookiePersistor) {
         cookieJar = new PersistentCookieJar(setCookieCache, sharedPrefsCookiePersistor);
+    }
+
+    /**
+     * 云端响应头拦截器，用来配置缓存策略
+     */
+    public Interceptor getNetWorkInterceptor() {
+        return new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request();
+                Response response = chain.proceed(request);
+                if (CommonUtil.isNetworkAvailable(VideoApp.getInstance())) {
+                    int maxAge = 1 * 60;
+                    // 有网络时 设置缓存超时时间0个小时
+                    response.newBuilder()
+                            .header("Cache-Control", "public, max-age=" + maxAge)
+                            .removeHeader("Pragma")
+                            .build();
+                } else {
+                    // 无网络时，设置超时为1周
+                    int maxStale = 60 * 60 * 24 * 7;
+                    response.newBuilder()
+                            .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
+                            .removeHeader("Pragma")
+                            .build();
+                }
+                return response;
+            }
+        };
     }
 
     private static OkHttpClient.Builder getOkhttpBuilder() {
@@ -116,4 +147,29 @@ public class RetrofitFactory {
                 .build();
         return retrofit.create(IUserService.class);
     }
+
+    private static IVideoService createVideoService() {
+
+        OkHttpClient client = getOkhttpBuilder().build();
+
+        Retrofit retrofit = getRetrofitBuilder()
+                .baseUrl("http://192.168.1.107:8080/webx/")
+                .client(client)
+                .build();
+        return retrofit.create(IVideoService.class);
+    }
+
+    public static IVideoService getVideoService() {
+
+        if (videoService == null) {
+            synchronized (RetrofitFactory.class) {
+                if (videoService == null) {
+                    videoService = createVideoService();
+                }
+            }
+        }
+        return videoService;
+    }
+
+
 }

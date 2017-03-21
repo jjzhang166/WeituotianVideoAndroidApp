@@ -15,4 +15,9 @@
     <string name="nav_logout">退出登录</string>
     <string name="btn_upload_video">上传视频</string>
     <string name="btn_upload_cover">上传封面</string>
+    <string name="et_title">输入标题</string>
+    <string name="et_description">输入视频描述</string>
+    <string name="btn_submit">提交</string>
+    <string name="menu_upload">上传</string>
+    <string name="menu_search">搜索</string>
 </resources>

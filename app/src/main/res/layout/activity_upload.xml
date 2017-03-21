@@ -1,73 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    xmlns:zhy="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true">
 
-    <!--自定义的视频播放view-->
-    <com.weituotian.mycommonvideo.view.VideoPlayerView
-        android:id="@+id/videoView"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.4"
-        >
-    </com.weituotian.mycommonvideo.view.VideoPlayerView>
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
-    <LinearLayout
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="256dp"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            <!--        app:expandedTitleTextAppearance="@style/CollapsingToolbarTitleStyle.About"
+            -->
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:minHeight="56dp"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <!--app:titleTextAppearance="@style/ToolBar.TitleText"-->
+
+                <TextView
+                    android:id="@+id/tv_av"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:text="上传视频"
+                    android:visibility="gone" />
+
+
+
+            </android.support.v7.widget.Toolbar>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="256dp"
+                android:background="@color/colorPrimaryDark"
+                android:fitsSystemWindows="true"
+                android:gravity="center">
+
+                <!--自定义的视频播放view-->
+                <com.weituotian.mycommonvideo.view.VideoPlayerView
+                    android:id="@+id/videoView"
+                    android:layout_width="match_parent"
+                    android:layout_height="256dp" >
+
+                </com.weituotian.mycommonvideo.view.VideoPlayerView>
+
+            </FrameLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="0.3"
-        android:weightSum="1">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:layout_gravity="center">
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+            <!--分割线-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e6e6e6" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="192dp"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5">
+
+                    <Button
+                        android:id="@+id/btn_open_video"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/open_video" />
+
+                    <Button
+                        android:id="@+id/btn_upload_video"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/btn_open_video"
+                        android:text="@string/btn_upload_video" />
+
+                    <Button
+                        android:id="@+id/btn_screen_shot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_toEndOf="@+id/btn_open_video"
+                        android:layout_toRightOf="@+id/btn_open_video"
+                        android:text="@string/screen_shot" />
+
+                    <Button
+                        android:id="@+id/btn_upload_cover"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/btn_upload_video"
+                        android:layout_alignBottom="@+id/btn_upload_video"
+                        android:layout_toEndOf="@+id/btn_upload_video"
+                        android:layout_toRightOf="@+id/btn_upload_video"
+                        android:text="@string/btn_upload_cover" />
+
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/iv_screenshot"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5" />
+
+            </LinearLayout>
+
+            <!--分割线-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e6e6e6" />
+
+            <com.zhy.view.flowlayout.TagFlowLayout
+                android:id="@+id/flowlayout_partition"
+                zhy:max_select="1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+            </com.zhy.view.flowlayout.TagFlowLayout>
+
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_title_black_24dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_title_black_24dp"
+                android:hint="@string/et_title"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="#222222"
+                android:textColorHint="#b3b3b3"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_description"
+                android:layout_width="match_parent"
+                android:layout_height="144dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_keyboard_black_24dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_keyboard_black_24dp"
+                android:hint="@string/et_description"
+                android:inputType="textMultiLine"
+                android:text="测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试"
+                android:textColor="#222222"
+                android:textColorHint="#b3b3b3"
+                android:textSize="16sp" />
 
             <Button
-                android:id="@+id/btn_open_video"
-                android:layout_width="wrap_content"
+                android:id="@+id/btn_submit"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/open_video" />
+                android:text="@string/btn_submit" />
 
-            <Button
-                android:id="@+id/btn_upload_video"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_upload_video"
-                android:layout_below="@+id/btn_open_video"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+        </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_screen_shot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/screen_shot"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/btn_open_video"
-                android:layout_toEndOf="@+id/btn_open_video" />
+    </android.support.v4.widget.NestedScrollView>
 
-            <Button
-                android:id="@+id/btn_upload_cover"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_upload_cover"
-                android:layout_alignBaseline="@+id/btn_upload_video"
-                android:layout_alignBottom="@+id/btn_upload_video"
-                android:layout_toRightOf="@+id/btn_upload_video"
-                android:layout_toEndOf="@+id/btn_upload_video" />
-
-        </RelativeLayout>
-
-        <ImageView
-            android:layout_weight="0.5"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

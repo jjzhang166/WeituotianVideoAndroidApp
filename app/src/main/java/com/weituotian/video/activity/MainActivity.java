@@ -11,8 +11,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -74,6 +77,8 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
     private MainPagerAdapter contentAdapter;
 
+    private static final String TAG = "MainActivity";
+
     private long exitTime;
 
     @Override
@@ -83,16 +88,13 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
     @Override
     protected void initAllMembersView(Bundle savedInstanceState) {
-        //toolbar
-        if (mToolbar != null) {
-            mToolbar.setTitle("");
-            setSupportActionBar(mToolbar);
-        }
+        Log.i(TAG, "initAllMembersView初始化所有子view");
 
         initDrawer();
-        initContent();
+        initContent();//初始化内容页
         initTab();//初始化选项卡
-        initMenu();
+        initToolBar();//初始化toolbar
+        initMenu();//测试化侧边菜单
         initLogin();
 
         //butter knife绑定flotingactionbutton的onclick无效,这里手动注册
@@ -126,6 +128,22 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
     }
 
+    public void initToolBar() {
+        //toolbar
+        if (mToolbar != null) {
+            mToolbar.setTitle("");
+            setSupportActionBar(mToolbar);
+        }
+    }
+
+    private void initTab() {
+        mTabs.setTabMode(TabLayout.MODE_FIXED);
+        mTabs.setTabTextColors(ContextCompat.getColor(this, R.color.colorAccent), ContextCompat.getColor(this, R.color.white));//颜色
+        mTabs.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.white));
+        ViewCompat.setElevation(mTabs, 10);
+        mTabs.setupWithViewPager(mViewPager);
+    }
+
     private void initContent() {
 
 //        this.mTabs = (TabLayout) findViewById(R.id.tl_tabs);
@@ -150,14 +168,6 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
             }
         });
-    }
-
-    private void initTab() {
-        mTabs.setTabMode(TabLayout.MODE_FIXED);
-        mTabs.setTabTextColors(ContextCompat.getColor(this, R.color.colorAccent), ContextCompat.getColor(this, R.color.white));//颜色
-        mTabs.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.white));
-        ViewCompat.setElevation(mTabs, 10);
-        mTabs.setupWithViewPager(mViewPager);
     }
 
     private void initMenu() {
@@ -203,7 +213,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
                 item.setCheckable(true);//设置选项可选
                 item.setChecked(true);//设置选型被选中
-                mDrawerLayout.closeDrawers();//关闭侧边菜单栏
+//                mDrawerLayout.closeDrawers();//关闭侧边菜单栏
 
                 //true to display the item as the selected item
                 return true;
@@ -250,6 +260,27 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             in.putExtra("a", "a");
             startActivityForResult(in, REQUEST_CODE_LOGIN);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_upload:
+                startActivity(new Intent(MainActivity.this, UploadActivity.class));
+                break;
+            case R.id.menu_refresh:
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

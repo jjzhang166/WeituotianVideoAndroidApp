@@ -24,6 +24,8 @@ import java.io.IOException;
 
 public class VideoPlayerView extends RelativeLayout implements TextureView.SurfaceTextureListener, PlayerControllerListener {
 
+    private Context mContext;
+
     //视频播放介质
     private TextureView mTextureView;
 
@@ -53,6 +55,7 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
 
     public VideoPlayerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
         initView(context);
     }
 
@@ -82,9 +85,9 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
      * @param videoUrl
      */
     public void play(Uri videoUrl) {
+        mVideoUrl = videoUrl;
         mPlayState = VideoPlayState.STAND_TO_PREPARE;
         createMediaPlayer();
-        mVideoUrl = videoUrl;
     }
 
     /**
@@ -214,7 +217,8 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
      * 创建视频播放控制器
      */
     private void createMediaPlayer() {
-        mediaPlayer = new MediaPlayer();
+//        mediaPlayer = new MediaPlayer();
+        mediaPlayer = MediaPlayer.create(mContext, mVideoUrl);
         addVideoPlayListener();
         createTextureView();
     }
@@ -241,12 +245,13 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
      * 加载视频
      */
     private void loadVideo() {
-        try {
+//        mediaPlayer.prepareAsync();
+        /*try {
             mediaPlayer.setDataSource(getContext(), mVideoUrl);
             mediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**---------------- textureview 视频播放介质 ----------------------**/
