@@ -33,4 +33,6 @@ public interface IVideoService {
     Observable<Result<RetInfo<Integer>>> uploadVideo(@QueryMap Map<String, String> options,
                                             @PartMap Map<String, RequestBody> externalFileParameters) ;
 
+    @POST("member/video/doadd")
+    Observable<Result<RetInfo<String>>> submitVideo(@QueryMap Map<String, String> options);
 }

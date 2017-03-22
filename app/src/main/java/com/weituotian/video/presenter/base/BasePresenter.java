@@ -12,8 +12,5 @@ import rx.functions.Func1;
  */
 
 public class BasePresenter<V extends MvpView> extends BaseLifecyclePresenter<V> {
-    
-    protected void runInMain(){
 
-    }
 }

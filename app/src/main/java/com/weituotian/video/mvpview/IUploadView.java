@@ -2,6 +2,7 @@ package com.weituotian.video.mvpview;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.weituotian.video.entity.Partition;
+import com.weituotian.video.entity.RetInfo;
 
 import java.util.List;
 
@@ -24,9 +25,11 @@ public interface IUploadView extends MvpView {
      */
     void onLoadPartitionsError(Throwable e);
 
-    void onVideoUploadStart();
-
     void onVideoUploadProgress(Integer percent);
 
     void onVideoUploadSuccess(Integer attachmentId);
+
+    void onCoverUploadSuccess(String url);
+
+    void onSubmitVideoFinish(RetInfo<String> retInfo);
 }

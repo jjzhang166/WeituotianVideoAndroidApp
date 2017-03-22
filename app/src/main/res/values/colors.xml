@@ -7,5 +7,8 @@
     <color name="white">#fff</color>
 
     <color name="transparent">#0000</color>
+    <color name="focus_text_color">#fb7299</color>
+    <color name="focus_bg_color">@android:color/transparent</color>
+    <color name="gray_light">#dcdcdc</color>
 
 </resources>

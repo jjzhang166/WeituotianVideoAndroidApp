@@ -6,6 +6,7 @@ import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.mvpview.ILoginView;
 import com.weituotian.video.presenter.base.BasePresenter;
+import com.weituotian.video.presenter.func1.ResultToEntityFunc1;
 
 import retrofit2.adapter.rxjava.Result;
 import rx.Observable;
@@ -22,8 +23,8 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
 
     public void doLogin(String username, String password) {
 
-        Observable<Result<RetInfo<User>>> observable = RetrofitFactory.getUserService().doLogin(username, password);
-        handleObservable(observable)
+        RetrofitFactory.getUserService().doLogin(username, password)
+                .flatMap(new ResultToEntityFunc1<User>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<User>() {
@@ -55,4 +56,5 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
         });
 */
     }
+
 }

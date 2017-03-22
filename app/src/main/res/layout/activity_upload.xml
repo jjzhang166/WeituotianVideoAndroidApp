@@ -19,33 +19,8 @@
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-            <!--        app:expandedTitleTextAppearance="@style/CollapsingToolbarTitleStyle.About"
-            -->
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:minHeight="56dp"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-                <!--app:titleTextAppearance="@style/ToolBar.TitleText"-->
-
-                <TextView
-                    android:id="@+id/tv_av"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:text="上传视频"
-                    android:visibility="gone" />
-
-
-
-            </android.support.v7.widget.Toolbar>
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleTextAppearance="@style/CollapsingToolbarTitleStyle.About">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -63,6 +38,27 @@
                 </com.weituotian.mycommonvideo.view.VideoPlayerView>
 
             </FrameLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:minHeight="56dp"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextAppearance="@style/ToolBar.TitleText">
+
+                <TextView
+                    android:id="@+id/tv_av"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:text="上传视频"
+                    android:visibility="gone" />
+
+            </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

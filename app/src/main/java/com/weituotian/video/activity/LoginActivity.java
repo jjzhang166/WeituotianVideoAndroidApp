@@ -11,7 +11,6 @@ import android.widget.Button;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.weituotian.video.R;
-import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.mvpview.ILoginView;
 import com.weituotian.video.presenter.LoginPresenter;
 import com.weituotian.video.utils.UIUtil;

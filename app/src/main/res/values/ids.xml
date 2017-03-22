@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="statusbar_view" type="id"/>
+    <item name="translucent_view" type="id"/>
     <item name="bili_video" type="id">bilibili视频</item>
 </resources>

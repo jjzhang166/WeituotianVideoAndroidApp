@@ -11,11 +11,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.weituotian.video.R;
 import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.http.LoginContext;
@@ -145,4 +147,17 @@ public class BrowserActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mBroswer.destroy();
+        mBroswer = null;
+    }
+
+    @Override
+    public void finish() {
+        ViewGroup view = (ViewGroup) getWindow().getDecorView();
+        view.removeAllViews();
+        super.finish();
+    }
 }

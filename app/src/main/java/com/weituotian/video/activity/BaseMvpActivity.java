@@ -1,17 +1,11 @@
 package com.weituotian.video.activity;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.weituotian.video.R;
-import com.weituotian.video.mvpview.ILoginView;
-import com.weituotian.video.presenter.LoginPresenter;
 
 import butterknife.ButterKnife;
 

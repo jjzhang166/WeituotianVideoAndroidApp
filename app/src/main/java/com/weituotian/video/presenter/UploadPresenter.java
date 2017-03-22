@@ -16,8 +16,10 @@ import com.weituotian.video.http.okhttp.UploadFileRequestBody;
 import com.weituotian.video.mvpview.IUploadView;
 import com.weituotian.video.presenter.base.BasePresenter;
 import com.weituotian.video.presenter.func1.ResultToEntityFunc1;
+import com.weituotian.video.presenter.func1.ResultToRetInfoFun1;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+import com.zhy.http.okhttp.request.RequestCall;
 
 import java.io.File;
 import java.util.HashMap;
@@ -69,6 +71,9 @@ public class UploadPresenter extends BasePresenter<IUploadView> {
 
     }
 
+    private RequestCall videoCall;
+    private RequestCall coverCall;
+
     public void uploadVideo(File file) {
        /*Map<String, String> optionMap = new HashMap<>();
         optionMap.put("Platformtype", "Android");
@@ -101,42 +106,114 @@ public class UploadPresenter extends BasePresenter<IUploadView> {
                     }
                 });*/
 
-        OkHttpUtils.post()//
+        videoCall = OkHttpUtils.post()//
                 .url("http://192.168.1.107:8080/webx/member/video/ajaxvideo")
                 .addFile("file", file.getName(), file)//
 //                .addParams("username", LoginContext.user.getName())
                 .addHeader("Content-Type", "multipart/form-data")
-                .build()//
-                .execute(new StringCallback() {
-                    private Integer percent = 0;
+                .build();
 
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Log.w("", "Exception:" + e.getMessage());
+        videoCall.execute(new StringCallback() {
+            private Integer percent = 0;
 
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.w("", "Exception:" + e.getMessage());
+
+            }
+
+            @Override
+            public void inProgress(float progress, long total, int id) {
+                int cur = (int) (progress * 100);
+                if (cur > percent) {//进度改变达到百分之一就
+                    percent = cur;
+                    Log.i("UploadPresenter", "progress:" + percent + "%");
+                    if (isViewAttached()) {
+                        getView().onVideoUploadProgress(percent);
                     }
+                }
+            }
 
-                    @Override
-                    public void inProgress(float progress, long total, int id) {
-                        int cur = (int) (progress * 100);
-                        if (cur > percent) {//进度改变达到百分之一就
-                            percent = cur;
-                            Log.i("UploadPresenter", "progress:" + percent + "%");
-                            getView().onVideoUploadProgress(percent);
-                        }
+            @Override
+            public void onResponse(String response, int id) {
+//                Log.i("UploadPresenter", "response:" + response);
+                RetInfo<Integer> retInfo = new Gson().fromJson(response, new TypeToken<RetInfo<Integer>>() {
+                }.getType());
+                Integer attachmentID = retInfo.getObj();
+//                Log.i("UploadPresenter", "attachmentID:" + attachmentID);
+                if (isViewAttached()) {
+                    getView().onVideoUploadSuccess(attachmentID);
+                }
+            }
+        });
+
+    }
+
+    public void cancelVideo() {
+        if (videoCall != null) {
+            videoCall.cancel();
+        }
+    }
+
+    public void uploadCover(File file) {
+        coverCall = OkHttpUtils.post()//
+                .url("http://192.168.1.107:8080/webx/member/video/ajaxcover")
+                .addFile("file", file.getName(), file)//
+//                .addParams("username", LoginContext.user.getName())
+                .addHeader("Content-Type", "multipart/form-data")
+                .build();
+
+        coverCall.execute(new StringCallback() {
+            private Integer percent = 0;
+
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.w("", "Exception:" + e.getMessage());
+
+            }
+
+            @Override
+            public void inProgress(float progress, long total, int id) {
+                int cur = (int) (progress * 100);
+                if (cur > percent) {//进度改变达到百分之一就
+                    percent = cur;
+                    Log.i("UploadPresenter", "progress:" + percent + "%");
+                    if (isViewAttached()) {
+                        getView().onVideoUploadProgress(percent);
                     }
+                }
+            }
 
+            @Override
+            public void onResponse(String response, int id) {
+                Log.i("UploadPresenter", "response:" + response);
+                RetInfo<Map<String, String>> retInfo = new Gson().fromJson(response, new TypeToken<RetInfo<Map<String, String>>>() {
+                }.getType());
+                String coverurl = retInfo.getObj().get("filename");
+                if (isViewAttached()) {
+                    getView().onCoverUploadSuccess(coverurl);
+                }
+            }
+        });
+    }
+
+    public void submitVideo(Map<String, String> optionMap) {
+        RetrofitFactory.getVideoService().submitVideo(optionMap)
+                .flatMap(new ResultToRetInfoFun1<String>())
+                .compose(this.<RetInfo<String>>bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RetInfo<String>>() {
                     @Override
-                    public void onResponse(String response, int id) {
-                        Log.i("UploadPresenter", "response:" + response);
-                        RetInfo<Integer> retInfo = new Gson().fromJson(response, new TypeToken<RetInfo<Integer>>() {
-                        }.getType());
-                        Integer attachmentID = retInfo.getObj();
-                        Log.i("UploadPresenter", "attachmentID:" + attachmentID);
-                        getView().onVideoUploadSuccess(attachmentID);
+                    public void call(RetInfo<String> retInfo) {
+                        getView().onSubmitVideoFinish(retInfo);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
                     }
                 });
-
     }
 
     private ProgressListener mProgressListener = new ProgressListener() {

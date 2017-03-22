@@ -11,33 +11,28 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.weituotian.video.R;
 import com.weituotian.video.adapter.MainPagerAdapter;
 import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.http.LoginContext;
-import com.weituotian.video.mvpview.ILoginView;
 import com.weituotian.video.mvpview.IMainView;
-import com.weituotian.video.presenter.LoginPresenter;
 import com.weituotian.video.presenter.MainPresenter;
 import com.weituotian.video.presenter.func1.ResultToEntityFunc1;
 import com.weituotian.video.utils.UIUtil;
 import com.weituotian.video.widget.CircleImageView;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -72,7 +67,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     TextView tvUsername;
 
     @BindView(R.id.nv_main)
-    NavigationView nvMenu;
+    NavigationView mNavigationView;
 
 
     private MainPagerAdapter contentAdapter;
@@ -94,7 +89,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         initContent();//初始化内容页
         initTab();//初始化选项卡
         initToolBar();//初始化toolbar
-        initMenu();//测试化侧边菜单
+        initNavigation();//测试化侧边菜单
         initLogin();
 
         //butter knife绑定flotingactionbutton的onclick无效,这里手动注册
@@ -121,8 +116,8 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
         //设置侧边栏的宽度
         DrawerLayout.LayoutParams layoutParams = null;
-        if (nvMenu != null) {
-            layoutParams = (DrawerLayout.LayoutParams) nvMenu.getLayoutParams();
+        if (mNavigationView != null) {
+            layoutParams = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
             layoutParams.width = getScreenSize()[0] / 4 * 3;
         }
 
@@ -170,14 +165,17 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         });
     }
 
-    private void initMenu() {
-        nvMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+    private void initNavigation() {
+
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_upload:
 
                         break;
+                    case R.id.nav_home:
+                        UserInfoDetailsActivity.launch(MainActivity.this, LoginContext.user.getId());
                     case R.id.nav_admin:
                         //打开我的后台
                         Intent in = new Intent(MainActivity.this, BrowserActivity.class);
@@ -319,6 +317,17 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     public void setLogin() {
         UIUtil.showToast(this, "欢迎回来哦");
         tvUsername.setText(LoginContext.user.getName());
+
+        //navigation view的设置
+        View headerView = mNavigationView.getHeaderView(0);
+        TextView mUserName = (TextView) headerView.findViewById(R.id.user_name);
+        ImageView mUserAvatar = (ImageView) headerView.findViewById(R.id.user_pic);
+        mUserAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserInfoDetailsActivity.launch(MainActivity.this, LoginContext.user.getId());
+            }
+        });
     }
 
     public void setNoLogin(String msg) {

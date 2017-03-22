@@ -14,6 +14,7 @@ public class User implements Serializable {
     private String password;
     private String email;
     private String name;
+    private String avatar;
     private Integer usertype;
 
     public int getId() {
@@ -54,6 +55,14 @@ public class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public Integer getUsertype() {

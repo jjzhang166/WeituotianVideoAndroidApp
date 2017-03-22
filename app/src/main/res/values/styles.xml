@@ -24,4 +24,13 @@
         <item name="colorControlNormal">@color/colorPrimaryDark</item>
         <item name="android:actionBarSize">46dp</item>
     </style>
+
+    <!--ToolBar TextSize style-->
+    <style name="ToolBar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="CollapsingToolbarTitleStyle.About" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@android:color/transparent</item>
+    </style>
+
 </resources>
