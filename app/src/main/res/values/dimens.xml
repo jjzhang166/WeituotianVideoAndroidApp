@@ -11,4 +11,7 @@
     <dimen name="default_grow_margin">20dp</dimen>
     <dimen name="default_tiny_padding">5dp</dimen>
     <dimen name="default_tiny_margin">3dp</dimen>
+    <dimen name="video_item_layout_height">90dp</dimen>
+    <dimen name="video_info_mini_icons_size">12dp</dimen>
+    <dimen name="default_tiny_text_size">14sp</dimen>
 </resources>

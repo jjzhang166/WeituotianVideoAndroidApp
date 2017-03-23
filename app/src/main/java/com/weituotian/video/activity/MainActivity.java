@@ -175,7 +175,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
                         break;
                     case R.id.nav_home:
-                        UserInfoDetailsActivity.launch(MainActivity.this, LoginContext.user.getId());
+                        MemberInfoDetailsActivity.launch(MainActivity.this, LoginContext.user.getId());
                     case R.id.nav_admin:
                         //打开我的后台
                         Intent in = new Intent(MainActivity.this, BrowserActivity.class);
@@ -273,7 +273,8 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             case R.id.menu_upload:
                 startActivity(new Intent(MainActivity.this, UploadActivity.class));
                 break;
-            case R.id.menu_refresh:
+            case R.id.menu_search:
+                MemberInfoDetailsActivity.launch(this,1);
                 break;
             default:
                 break;
@@ -325,7 +326,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         mUserAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserInfoDetailsActivity.launch(MainActivity.this, LoginContext.user.getId());
+                MemberInfoDetailsActivity.launch(MainActivity.this, LoginContext.user.getId());
             }
         });
     }

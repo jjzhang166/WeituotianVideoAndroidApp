@@ -17,7 +17,7 @@ import rx.Observable;
  * @author laohu
  * @site http://ittiger.cn
  */
-public interface BiliApi {
+public interface IBiliService {
 
     @GET("index/ding/{index}.json")
     Observable<Result<BiliDingVideo>> getVideos(@Path("index") int index);

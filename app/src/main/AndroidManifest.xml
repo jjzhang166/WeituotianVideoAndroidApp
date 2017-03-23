@@ -33,6 +33,8 @@
 
         </activity>
 
+        <activity android:name=".activity.MemberInfoDetailsActivity"/>
+
         <!--选择视频-->
         <activity
             android:name="vn.tungdx.mediapicker.activities.MediaPickerActivity"

@@ -5,15 +5,12 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.weituotian.video.VideoApp;
-import com.weituotian.video.http.service.BiliApi;
+import com.weituotian.video.http.service.IBiliService;
 import com.weituotian.video.http.service.IUserService;
 import com.weituotian.video.http.service.IVideoService;
 import com.weituotian.video.utils.CommonUtil;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
@@ -35,7 +32,7 @@ public class RetrofitFactory {
     private static final String BILI_BASE_URL = "http://www.bilibili.com/";
     public static final String BASE_SERVER_URL = "http://192.168.1.107:8080/webx/";
 
-    private static volatile BiliApi sBiliApi;
+    private static volatile IBiliService biliService;
     private static volatile IUserService userService;
     private static volatile IVideoService videoService;
 
@@ -102,19 +99,19 @@ public class RetrofitFactory {
 
     /* 以下获得或者新建服务 */
 
-    public static BiliApi getBiliVideoService() {
+    public static IBiliService getBiliVideoService() {
 
-        if (sBiliApi == null) {
+        if (biliService == null) {
             synchronized (RetrofitFactory.class) {
-                if (sBiliApi == null) {
-                    sBiliApi = createBiliService();
+                if (biliService == null) {
+                    biliService = createBiliService();
                 }
             }
         }
-        return sBiliApi;
+        return biliService;
     }
 
-    private static BiliApi createBiliService() {
+    private static IBiliService createBiliService() {
 
         OkHttpClient client = getOkhttpBuilder().build();
 
@@ -122,7 +119,7 @@ public class RetrofitFactory {
                 .baseUrl(BILI_BASE_URL)
                 .client(client)
                 .build();
-        return retrofit.create(BiliApi.class);
+        return retrofit.create(IBiliService.class);
     }
 
     public static IUserService getUserService() {
