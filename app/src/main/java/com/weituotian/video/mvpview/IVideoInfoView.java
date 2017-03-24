@@ -1,0 +1,16 @@
+package com.weituotian.video.mvpview;
+
+import com.hannesdorfmann.mosby.mvp.MvpView;
+import com.weituotian.video.entity.FrontVideo;
+
+/**
+ * Created by ange on 2017/3/24.
+ */
+
+public interface IVideoInfoView extends MvpView{
+
+    void onLoadVideoInfo(FrontVideo frontVideo);
+
+    void onLoadVideInfoError(Throwable throwable);
+
+}

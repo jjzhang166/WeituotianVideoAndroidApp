@@ -12,5 +12,8 @@
     <color name="gray_light">#dcdcdc</color>
     <color name="font_normal">#555555</color>
     <color name="black_alpha_45">#71000000</color>
+    <color name="window_background">#eaeaea</color>
+    <color name="white_80">#fafafa</color>
+    <color name="green_300">#81c784</color>
 
 </resources>

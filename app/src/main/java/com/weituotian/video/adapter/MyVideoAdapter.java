@@ -60,13 +60,13 @@ public class MyVideoAdapter extends AbsRecyclerViewAdapter {
                     .into(itemViewHolder.mItemImg);
 
             itemViewHolder.mItemTitle.setText(vo.getTitle());
-            itemViewHolder.mItemPlay.setText(vo.getPlay());
+            itemViewHolder.mItemPlay.setText(String.valueOf(vo.getPlay()));
             itemViewHolder.mItemUserName.setText(vo.getMemberName());
         }
         super.onBindViewHolder(holder, position);
     }
 
-    private class ItemViewHolder extends ClickableViewHolder {
+    public class ItemViewHolder extends ClickableViewHolder {
         @BindView(R.id.item_img)
         ImageView mItemImg;
         @BindView(R.id.item_title)

@@ -4,6 +4,8 @@ import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.weituotian.video.VideoApp;
 import com.weituotian.video.http.service.IBiliService;
 import com.weituotian.video.http.service.IUserService;
@@ -38,7 +40,8 @@ public class RetrofitFactory {
 
     private static RxJavaCallAdapterFactory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
 
-    private static GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create();
+    private static Gson mGson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+    private static GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(mGson);
 
 
     public static ClearableCookieJar cookieJar;

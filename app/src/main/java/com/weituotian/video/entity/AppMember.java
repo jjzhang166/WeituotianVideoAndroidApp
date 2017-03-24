@@ -21,7 +21,7 @@ public class AppMember {
     private String avatar;
 
     //等级
-    private Integer level;
+    private Integer experience;
 
     //描述
     private String descript;
@@ -95,12 +95,12 @@ public class AppMember {
         this.avatar = avatar;
     }
 
-    public Integer getLevel() {
-        return level;
+    public Integer getExperience() {
+        return experience;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setExperience(Integer experience) {
+        this.experience = experience;
     }
 
     public String getDescript() {

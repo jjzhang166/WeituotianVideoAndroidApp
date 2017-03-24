@@ -322,6 +322,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         //navigation view的设置
         View headerView = mNavigationView.getHeaderView(0);
         TextView mUserName = (TextView) headerView.findViewById(R.id.user_name);
+        mUserName.setText(LoginContext.user.getName());
         ImageView mUserAvatar = (ImageView) headerView.findViewById(R.id.user_pic);
         mUserAvatar.setOnClickListener(new View.OnClickListener() {
             @Override

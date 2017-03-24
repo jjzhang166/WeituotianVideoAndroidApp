@@ -1,5 +1,6 @@
 package com.weituotian.video.http.service;
 
+import com.weituotian.video.entity.FrontVideo;
 import com.weituotian.video.entity.Partition;
 import com.weituotian.video.entity.RetInfo;
 import com.weituotian.video.entity.User;
@@ -15,6 +16,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PartMap;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -31,8 +33,14 @@ public interface IVideoService {
     @POST("member/video/ajaxvideo")
     @Multipart
     Observable<Result<RetInfo<Integer>>> uploadVideo(@QueryMap Map<String, String> options,
-                                            @PartMap Map<String, RequestBody> externalFileParameters) ;
+                                                     @PartMap Map<String, RequestBody> externalFileParameters);
 
     @POST("member/video/doadd")
     Observable<Result<RetInfo<String>>> submitVideo(@QueryMap Map<String, String> options);
+
+    @POST("video/av/info")
+    Observable<Result<RetInfo<FrontVideo>>> getVideoInfo(@Query("videoId") Integer videoId);
+
+    @POST("video/ac/getSrc")
+    Observable<Result<RetInfo<String>>> getVideoSrc(@Query("videoId") Integer videoId);
 }

@@ -23,6 +23,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.weituotian.video.R;
 import com.weituotian.video.adapter.MyVideoAdapter;
 import com.weituotian.video.adapter.VideoAdapter;
+import com.weituotian.video.adapter.helper.AbsRecyclerViewAdapter;
 import com.weituotian.video.adapter.helper.EndlessRecyclerOnScrollListener;
 import com.weituotian.video.adapter.helper.HeaderViewRecyclerAdapter;
 import com.weituotian.video.entity.AppMember;
@@ -113,6 +114,7 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
     private boolean mIsRefreshing = false;
 
     private View loadMoreView;
+    private View noMoreView;
 
     @Override
     public int getContentViewId() {
@@ -192,9 +194,12 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
         createLoadMoreView();
 
         //点击一项打开视频
-        /*mAdapter.setOnItemClickListener((position, holder) -> BrowserActivity.launch(
-                ActivityCenterActivity.this, activityCenters.get(position).getLink(),
-                activityCenters.get(position).getTitle()));*/
+        mVideoAdapter.setOnItemClickListener(new AbsRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, AbsRecyclerViewAdapter.ClickableViewHolder holder) {
+                VideoDetailsActivity.launch(MemberInfoDetailsActivity.this, vos.get(position).getId());
+            }
+        });
 
         //正在刷新的话就不允许touch
         /*mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
@@ -209,9 +214,12 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
         loadMoreView = LayoutInflater.from(MemberInfoDetailsActivity.this).inflate(R.layout.item_footer, mRecyclerView, false);
         mHeaderViewRecyclerAdapter.addFooterView(loadMoreView);
         loadMoreView.setVisibility(View.GONE);
+        noMoreView = LayoutInflater.from(MemberInfoDetailsActivity.this).inflate(R.layout.item_nomore, mRecyclerView, false);
+        mHeaderViewRecyclerAdapter.addFooterView(noMoreView);
+        noMoreView.setVisibility(View.GONE);
     }
 
-    private void loadVideos(){
+    private void loadVideos() {
         presenter.getMemberVideos(userID, pageNum, pageSize);
         loadMoreView.setVisibility(View.VISIBLE);
     }
@@ -291,7 +299,7 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
         //设置粉丝和关注
         mUserNameText.setText(appMember.getName());
         mFollowNumText.setText(String.valueOf(appMember.getFollows()));
-        mFansNumText.setText(appMember.getFans());
+        mFansNumText.setText(String.valueOf(appMember.getFans()));
 
         //设置用户性别
         if (appMember.getSex() == SexEnum.MALE) {
@@ -327,13 +335,17 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
 
     @Override
     public void onLoadVideos(PageInfo<VideoListVo> pageInfo) {
-        vos.addAll(pageInfo.getList());
-        finishTask();
+        if (pageInfo.getList().size() > 0) {
+            vos.addAll(pageInfo.getList());
+            finishTask();
+        } else {
+            onNoMoreVideo();
+        }
     }
 
-    @Override
     public void onNoMoreVideo() {
-        UIUtil.showToast(this,"没有更多视频了");
+//        UIUtil.showToast(this, "没有更多视频了");
+        noMoreView.setVisibility(View.VISIBLE);
         loadMoreView.setVisibility(View.GONE);
     }
 }

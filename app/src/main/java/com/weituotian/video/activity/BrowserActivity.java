@@ -141,6 +141,8 @@ public class BrowserActivity extends AppCompatActivity {
             case R.id.menu_refresh:
                 mBroswer.reload();
                 break;
+            case android.R.id.home:
+                onBackPressed();
             default:
                 break;
         }

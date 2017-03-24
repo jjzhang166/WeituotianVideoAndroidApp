@@ -16,6 +16,4 @@ public interface IMemberInfoView extends MvpView{
     void onLoadMemberInfoError(Throwable e);
 
     void onLoadVideos(PageInfo<VideoListVo> pageInfo);
-
-    void onNoMoreVideo();
 }
