@@ -13,4 +13,5 @@ public interface IVideoInfoView extends MvpView{
 
     void onLoadVideInfoError(Throwable throwable);
 
+    void onLoadVideoSrc(String url);
 }

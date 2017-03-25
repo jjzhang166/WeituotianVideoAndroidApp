@@ -8,7 +8,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.weituotian.weituotianvideo"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -75,6 +75,13 @@ dependencies {
     })
 
     compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.0@aar'
+
+    //现成的视频播放器
+    compile 'fm.jiecao:jiecaovideoplayer:5.5.2'
+//    compile 'com.shuyu:GSYVideoPlayer:1.6.1'
+/*    compile('com.dou361.ijkplayer:jjdxm-ijkplayer:1.0.5') {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }*/
 
     compile project(':videoScreenShot')
 }

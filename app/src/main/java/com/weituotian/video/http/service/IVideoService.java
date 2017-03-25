@@ -41,6 +41,6 @@ public interface IVideoService {
     @POST("video/av/info")
     Observable<Result<RetInfo<FrontVideo>>> getVideoInfo(@Query("videoId") Integer videoId);
 
-    @POST("video/ac/getSrc")
+    @POST("video/av/getSrc")
     Observable<Result<RetInfo<String>>> getVideoSrc(@Query("videoId") Integer videoId);
 }

@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.weituotian.video.R;
 import com.weituotian.video.adapter.MainPagerAdapter;
 import com.weituotian.video.factory.RetrofitFactory;
@@ -321,9 +323,20 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
         //navigation view的设置
         View headerView = mNavigationView.getHeaderView(0);
+
+        //用户名
         TextView mUserName = (TextView) headerView.findViewById(R.id.user_name);
         mUserName.setText(LoginContext.user.getName());
+        //头像
         ImageView mUserAvatar = (ImageView) headerView.findViewById(R.id.user_pic);
+        Glide.with(MainActivity.this)
+                .load(LoginContext.user.getAvatar())
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.video_default_cover)
+                .dontAnimate()
+                .into(mUserAvatar);
+
         mUserAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,7 +3,6 @@ package com.weituotian.video.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,18 +16,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.flyco.tablayout.SlidingTabLayout;
+import com.weituotian.mycommonvideo.view.VideoPlayerView;
 import com.weituotian.video.R;
 import com.weituotian.video.entity.FrontVideo;
 import com.weituotian.video.event.AppBarStateChangeEvent;
@@ -39,12 +39,12 @@ import com.weituotian.video.utils.DisplayUtil;
 import com.weituotian.video.utils.SystemBarHelper;
 import com.weituotian.video.utils.UIUtil;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -85,15 +85,35 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
     @BindView(R.id.tv_av)
     TextView mAvText;
 
-    private List<Fragment> fragments = new ArrayList<>();
-
-    private List<String> titles = new ArrayList<>();
-
-    private int videoId;
+    @BindView(R.id.fl_player_container)
+    FrameLayout mFlPlayerContainer;
 
     public final static String EXTRA_AV = "extra_av";
 
-//  private VideoDetailsInfo.DataBean mVideoDetailsInfo;
+    private List<Fragment> fragments = new ArrayList<>();
+    private List<String> titles = new ArrayList<>();
+
+    private int videoId;
+    private String mVideoUrl;
+
+    //视频播放view,动态初始化
+    private VideoPlayerView mVideoPlayerView;
+
+    //floating action button 的动画
+    private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener1 = new AppBarLayout.OnOffsetChangedListener() {
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+            setViewsTranslation(verticalOffset);
+        }
+    };
+
+    public static void launch(Activity activity, int videoId) {
+
+        Intent intent = new Intent(activity, VideoDetailsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(EXTRA_AV, videoId);
+        activity.startActivity(intent);
+    }
 
     @Override
     public int getContentViewId() {
@@ -106,8 +126,8 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
         videoId = intent.getIntExtra(EXTRA_AV, -1);
         presenter.getVideoInfo(videoId);
 
-        /*mFAB.setClickable(false);
-        mFAB.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray_20)));
+        mFAB.setClickable(false);
+        /*mFAB.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.gray_20)));
         mFAB.setTranslationY(-getResources().getDimension(R.dimen.floating_action_button_size_half));*/
 
         //打开视频播放activity
@@ -115,13 +135,8 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
                 mVideoDetailsInfo.getPages().get(0).getCid(), mVideoDetailsInfo.getTitle()));*/
 
 
-        mAppBarLayout.addOnOffsetChangedListener(
-                new AppBarLayout.OnOffsetChangedListener() {
-                    @Override
-                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                        setViewsTranslation(verticalOffset);
-                    }
-                });
+        mAppBarLayout.addOnOffsetChangedListener(onOffsetChangedListener1);
+
         mAppBarLayout.addOnOffsetChangedListener(new AppBarStateChangeEvent() {
 
             @Override
@@ -176,40 +191,6 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
         mAvText.setText("av" + videoId);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-//        getMenuInflater().inflate(R.menu.menu_video, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setViewsTranslation(int target) {
-
-        mFAB.setTranslationY(target);
-        if (target == 0) {
-            showFAB();
-        } else if (target < 0) {
-            hideFAB();
-        }
-    }
-
-    public static void launch(Activity activity, int videoId) {
-
-        Intent intent = new Intent(activity, VideoDetailsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(EXTRA_AV, videoId);
-        activity.startActivity(intent);
-    }
-
     private void showFAB() {
 
         mFAB.animate().scaleX(1f).scaleY(1f)
@@ -228,12 +209,38 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
         mFAB.setClickable(false);
     }
 
+    private void setViewsTranslation(int target) {
+
+        mFAB.setTranslationY(target);
+        if (target == 0) {
+            showFAB();
+        } else if (target < 0) {
+            hideFAB();
+        }
+    }
+
     private void measureTabLayoutTextWidth(int position) {
         String title = titles.get(position);
         TextView titleView = mSlidingTabLayout.getTitleView(position);
         TextPaint paint = titleView.getPaint();
         float textWidth = paint.measureText(title);
         mSlidingTabLayout.setIndicatorWidth(textWidth / 3);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+//        getMenuInflater().inflate(R.menu.menu_video, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /*  实现view的接口 */
@@ -289,6 +296,18 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
                 .placeholder(R.drawable.video_default_cover)
                 .dontAnimate()
                 .into(mVideoPreview);
+
+
+        //可以点击播放视频
+        mFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mVideoUrl == null) {
+                    //去获得播放视频源
+                    presenter.getVideoSrc(videoId);
+                }
+            }
+        });
     }
 
     @Override
@@ -300,6 +319,29 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
                     @Override
                     public void call(Long aLong) {
 //                        UploadActivity.this.finish();
+                    }
+                });
+    }
+
+
+    @Override
+    public void onLoadVideoSrc(String url) {
+        mVideoUrl = url;
+
+        //取消mfab的显示和动画
+        mAppBarLayout.removeOnOffsetChangedListener(onOffsetChangedListener1);
+        hideFAB();
+
+        //初始化视频播放
+        mVideoPlayerView = new VideoPlayerView(VideoDetailsActivity.this);
+        mFlPlayerContainer.addView(mVideoPlayerView);
+        mVideoPreview.setVisibility(View.GONE);
+        Observable.just(url)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        mVideoPlayerView.play(s);
                     }
                 });
     }

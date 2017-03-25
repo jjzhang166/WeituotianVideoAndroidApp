@@ -2,6 +2,7 @@ package com.weituotian.mycommonvideo.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -74,10 +75,19 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
         playerControll.setmControllerListener(this);
     }
 
-    /**
-     * ---------------- 对外方法----------------------
-     **/
+    /**---------------- 对外方法--------------------- */
+
     private Uri mVideoUrl;
+
+    /**
+     * 外部接口 播放资源路径
+     *
+     * @param path
+     */
+    public void play(String path) {
+        Uri uri = Uri.parse(path);
+        play(uri);
+    }
 
     /**
      * 外部接口 播放资源url
@@ -188,7 +198,7 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
     }
 
     /**
-     * 更新播放进度
+     * 更新播放进度,每过去1s执行
      */
     private void updatePlayProgress() {
 
@@ -228,6 +238,13 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
      */
     private void addVideoPlayListener() {
         mediaPlayer.setOnPreparedListener(mOnPreparedListener);
+
+        mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+            @Override
+            public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+                updateTextureViewSizeCenterCrop(width, height);
+            }
+        });
     }
 
     /**
@@ -255,6 +272,7 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
     }
 
     /**---------------- textureview 视频播放介质 ----------------------**/
+
     /**
      * 创建textureview显示画面
      */
@@ -283,6 +301,29 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
             playerControll.toggle();
         }
     };
+
+    //重新计算video的显示位置，裁剪后全屏显示
+    private void updateTextureViewSizeCenterCrop(int width, int height) {
+
+        int tvWidth = mTextureView.getWidth();
+        int tvHeight = mTextureView.getHeight();
+
+        float sx = (float) tvWidth / (float) width;
+        float sy = (float) tvHeight / (float) height;
+        Matrix matrix = new Matrix();
+        float maxScale = Math.max(sx, sy);
+
+        //第1步:把视频区移动到View区,使两者中心点重合.
+        matrix.preTranslate((tvWidth - width) / 2, (tvHeight - height) / 2);
+
+        //第2步:因为默认视频是fitXY的形式显示的,所以首先要缩放还原回来.
+        matrix.preScale(width / (float) tvWidth, height / (float) tvHeight);
+
+        //第3步,等比例放大或缩小,直到视频区的一边超过View一边, 另一边与View的另一边相等. 因为超过的部分超出了View的范围,所以是不会显示的,相当于裁剪了.
+        matrix.postScale(maxScale, maxScale, tvWidth / 2, tvHeight / 2);//后两个参数坐标是以整个View的坐标系以参考的
+        mTextureView.setTransform(matrix);
+        mTextureView.postInvalidate();
+    }
 
     private Surface mSurface;
 
@@ -316,7 +357,7 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
     }
 
 
-    /**---------------- 视频控制器事件 ----------------------**/
+    /**---------------- 以下实现playController的事件 ----------------------**/
     /**
      * 播放控制器事件,播放按钮被点击
      */
@@ -368,7 +409,7 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
 
             int duration = mediaPlayer.getDuration();//总时长
 
-            int step = (int) ( duration * 0.05);//每次前进视频百分比的百分之五
+            int step = (int) (duration * 0.05);//每次前进视频百分比的百分之五
 
             int current = mediaPlayer.getCurrentPosition();//当前播放时长
 

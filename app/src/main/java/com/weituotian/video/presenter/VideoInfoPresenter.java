@@ -37,4 +37,23 @@ public class VideoInfoPresenter extends BasePresenter<IVideoInfoView> {
                 });
     }
 
+    public void getVideoSrc(Integer videoId) {
+        RetrofitFactory.getVideoService().getVideoSrc(videoId)
+                .flatMap(new ResultToEntityFunc1<String>())
+                .compose(this.<String>bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String url) {
+                        getView().onLoadVideoSrc(url);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        getView().onLoadVideInfoError(throwable);
+                    }
+                });
+    }
 }

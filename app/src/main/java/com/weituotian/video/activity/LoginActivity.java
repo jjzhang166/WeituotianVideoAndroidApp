@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,6 +15,7 @@ import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.weituotian.video.R;
 import com.weituotian.video.mvpview.ILoginView;
 import com.weituotian.video.presenter.LoginPresenter;
+import com.weituotian.video.utils.SystemBarHelper;
 import com.weituotian.video.utils.UIUtil;
 
 import java.util.regex.Matcher;
@@ -30,14 +33,21 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
 
     @BindView(R.id.et_username)
     TextInputEditText etUsername;
+
     @BindView(R.id.til_mobile)
     TextInputLayout tilMobile;
+
     @BindView(R.id.til_password)
     TextInputLayout tilPassword;
+
     @BindView(R.id.bt_login)
     Button btLogin;
+
     @BindView(R.id.et_password)
     TextInputEditText etPassword;
+
+    @BindView(R.id.toolbar_simple)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +55,22 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
+        initToolBar();
+
         Intent intent = getIntent();//获得从mainactivity传来的数据
+    }
+
+    private void initToolBar() {
+        mToolbar.setTitle("");
+        setSupportActionBar(mToolbar);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        //设置StatusBar透明
+        SystemBarHelper.immersiveStatusBar(this);
+        SystemBarHelper.setHeightAndPadding(this, mToolbar);
     }
 
     @NonNull

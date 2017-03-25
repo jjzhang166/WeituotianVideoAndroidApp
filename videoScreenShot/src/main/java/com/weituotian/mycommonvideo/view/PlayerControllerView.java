@@ -27,6 +27,7 @@ public class PlayerControllerView extends LinearLayout {
     private ImageButton mPlayBtn;
     private ImageButton mForwardBtn;
     private ImageButton mBackwardBtn;
+    private ImageButton mFullScreenBtn;
 
     //保存视频总长度
     private int mVideoDuration = 0;
@@ -76,6 +77,8 @@ public class PlayerControllerView extends LinearLayout {
         mPlayBtn = (ImageButton) this.findViewById(R.id.iv_pause);
         mForwardBtn = (ImageButton) this.findViewById(R.id.iv_next);
         mBackwardBtn = (ImageButton) this.findViewById(R.id.iv_pre);
+        mFullScreenBtn = (ImageButton) this.findViewById(R.id.iv_fullscreen);
+        mFullScreenBtn.setVisibility(View.GONE);//默认全屏按钮不显示
 
         setListener();
     }
@@ -146,6 +149,8 @@ public class PlayerControllerView extends LinearLayout {
         }
     };
 
+    /**--对外方法--**/
+
     /**
      * 设置播放状态
      */
@@ -161,6 +166,14 @@ public class PlayerControllerView extends LinearLayout {
         mPlayBtn.setImageResource(resid);
 
         mPlayState = VideoPlayState.PAUSE;
+    }
+
+    public void showFullScreenBtn(){
+        mFullScreenBtn.setVisibility(VISIBLE);
+    }
+
+    public void hideFullScreenBtn(){
+        mFullScreenBtn.setVisibility(GONE);
     }
 
     /**

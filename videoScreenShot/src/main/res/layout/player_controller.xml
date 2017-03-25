@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="70dp"
     android:background="#a000"
@@ -18,7 +19,9 @@
             android:id="@+id/tv_current_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="10dp" />
+            android:paddingEnd="10dp"
+            android:paddingRight="10dp"
+            android:paddingStart="10dp" />
 
         <SeekBar
             android:id="@+id/sb_process"
@@ -35,38 +38,44 @@
             android:id="@+id/tv_total_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp" />
+            android:paddingEnd="10dp"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:paddingBottom="5dp"
-        android:paddingTop="10dp"
-        android:weightSum="3">
+        android:paddingTop="10dp">
 
         <ImageButton
             android:id="@+id/iv_pre"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:src="@drawable/ic_skip_previous_light_blue_500_24dp" />
 
         <ImageButton
             android:id="@+id/iv_pause"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
+            android:minWidth="75dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:src="@drawable/ic_play_circle_outline_light_blue_500_24dp" />
 
         <ImageButton
             android:id="@+id/iv_next"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:src="@drawable/ic_skip_next_light_blue_500_24dp" />
 
+        <ImageButton
+            android:id="@+id/iv_fullscreen"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:tint="#198bde"
+            android:src="@drawable/ic_fullscreen_black_24dp" />
     </LinearLayout>
 
-</merge >
+</merge>
