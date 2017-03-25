@@ -33,8 +33,10 @@
 
         </activity>
 
-        <activity android:name=".activity.VideoDetailsActivity"/>
-        <activity android:name=".activity.MemberInfoDetailsActivity"/>
+        <activity android:name=".activity.VideoDetailsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MemberInfoDetailsActivity" />
 
         <!--选择视频-->
         <activity

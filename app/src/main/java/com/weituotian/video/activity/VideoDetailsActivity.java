@@ -19,6 +19,7 @@ import android.text.TextPaint;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.flyco.tablayout.SlidingTabLayout;
+
 import com.weituotian.mycommonvideo.view.VideoPlayerView;
 import com.weituotian.video.R;
 import com.weituotian.video.entity.FrontVideo;
@@ -45,6 +47,8 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
+import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -88,6 +92,11 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
     @BindView(R.id.fl_player_container)
     FrameLayout mFlPlayerContainer;
 
+    //    @BindView(R.id.videoplayer)
+    JCVideoPlayerStandard jcVideoPlayerStandard;
+//@BindView(R.id.detail_player)
+//    StandardGSYVideoPlayer gsyVideoPlayer;
+
     public final static String EXTRA_AV = "extra_av";
 
     private List<Fragment> fragments = new ArrayList<>();
@@ -95,6 +104,8 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
 
     private int videoId;
     private String mVideoUrl;
+    private FrontVideo frontVideo;
+
 
     //视频播放view,动态初始化
     private VideoPlayerView mVideoPlayerView;
@@ -227,6 +238,8 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
         mSlidingTabLayout.setIndicatorWidth(textWidth / 3);
     }
 
+    /*-- activity事件 --*/
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -243,10 +256,26 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JCVideoPlayer.releaseAllVideos();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (JCVideoPlayer.backPress()) {
+            return;
+        }
+        super.onBackPressed();
+    }
+
     /*  实现view的接口 */
 
     @Override
     public void onLoadVideoInfo(FrontVideo frontVideo) {
+        this.frontVideo = frontVideo;
+
         mAvText.setText(frontVideo.getTitle());
 
 
@@ -289,14 +318,15 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
                 ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));*/
         mCollapsingToolbarLayout.setTitle("");
 
+        //加载视频封面
         Glide.with(VideoDetailsActivity.this)
                 .load(frontVideo.getCover())
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.video_default_cover)
                 .dontAnimate()
-                .into(mVideoPreview);
-
+                .into(mVideoPreview);//mVideoPreview
+//        gsyVideoPlayer.setThumbImageView(mVideoPreview);
 
         //可以点击播放视频
         mFAB.setOnClickListener(new View.OnClickListener() {
@@ -323,7 +353,6 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
                 });
     }
 
-
     @Override
     public void onLoadVideoSrc(String url) {
         mVideoUrl = url;
@@ -333,7 +362,7 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
         hideFAB();
 
         //初始化视频播放
-        mVideoPlayerView = new VideoPlayerView(VideoDetailsActivity.this);
+        /*mVideoPlayerView = new VideoPlayerView(VideoDetailsActivity.this);
         mFlPlayerContainer.addView(mVideoPlayerView);
         mVideoPreview.setVisibility(View.GONE);
         Observable.just(url)
@@ -343,7 +372,59 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
                     public void call(String s) {
                         mVideoPlayerView.play(s);
                     }
-                });
+                });*/
+        mVideoPreview.setVisibility(View.GONE);
+
+        jcVideoPlayerStandard = new JCVideoPlayerStandard(VideoDetailsActivity.this);
+        jcVideoPlayerStandard.setUp(url
+                , JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, frontVideo.getTitle());
+
+        mFlPlayerContainer.addView(jcVideoPlayerStandard);
+
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) jcVideoPlayerStandard.getLayoutParams();
+        layoutParams.height = mFlPlayerContainer.getHeight();
+        jcVideoPlayerStandard.setLayoutParams(layoutParams);
+//        jcVideoPlayerStandard.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        jcVideoPlayerStandard.startVideo();
+
+        /*gsyVideoPlayer = new StandardGSYVideoPlayer(VideoDetailsActivity.this);
+        mFlPlayerContainer.addView(gsyVideoPlayer);
+
+        gsyVideoPlayer.setUp(url, true, null, frontVideo.getTitle());
+
+        //非全屏下，不显示title
+        gsyVideoPlayer.getTitleTextView().setVisibility(View.GONE);
+
+//非全屏下不显示返回键
+        gsyVideoPlayer.getBackButton().setVisibility(View.GONE);
+
+//打开非全屏下触摸效果
+        gsyVideoPlayer.setIsTouchWiget(true);
+
+//立即播放
+        gsyVideoPlayer.startPlayLogic();
+
+        //设置旋转
+        final OrientationUtils orientationUtils = new OrientationUtils(this, gsyVideoPlayer);
+
+        //开启自动旋转
+        gsyVideoPlayer.setRotateViewAuto(false);
+
+        //全屏首先横屏
+        gsyVideoPlayer.setLockLand(true);
+
+        //是否需要全屏动画效果
+        gsyVideoPlayer.setShowFullAnimation(false);
+
+        //设置全屏按键功能
+        gsyVideoPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gsyVideoPlayer.startWindowFullscreen(VideoDetailsActivity.this, false, false);
+//                orientationUtils.resolveByClick();
+            }
+        });*/
     }
 
     /* 内置view pager 的adapter*/

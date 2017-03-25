@@ -34,7 +34,15 @@
                     android:fitsSystemWindows="true"
                     android:gravity="center">
 
+                    <!--<com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
+                        android:id="@+id/detail_player"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />-->
 
+                    <!--<fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard
+                        android:id="@+id/videoplayer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />-->
 
                     <ImageView
                         android:id="@+id/video_preview"
