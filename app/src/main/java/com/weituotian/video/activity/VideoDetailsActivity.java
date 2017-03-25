@@ -24,6 +24,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -376,16 +377,14 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
         mVideoPreview.setVisibility(View.GONE);
 
         jcVideoPlayerStandard = new JCVideoPlayerStandard(VideoDetailsActivity.this);
-        jcVideoPlayerStandard.setUp(url
-                , JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, frontVideo.getTitle());
 
-        mFlPlayerContainer.addView(jcVideoPlayerStandard);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mFlPlayerContainer.addView(jcVideoPlayerStandard, lp);
 
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) jcVideoPlayerStandard.getLayoutParams();
-        layoutParams.height = mFlPlayerContainer.getHeight();
-        jcVideoPlayerStandard.setLayoutParams(layoutParams);
-//        jcVideoPlayerStandard.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        jcVideoPlayerStandard.setUp(url, JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, frontVideo.getTitle());
 
+        //开始播放
         jcVideoPlayerStandard.startVideo();
 
         /*gsyVideoPlayer = new StandardGSYVideoPlayer(VideoDetailsActivity.this);

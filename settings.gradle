@@ -1,1 +1,1 @@
-include ':app', ':videoScreenShot', ':mediapicker'
+include ':app', ':videoScreenShot', ':mediapicker', ':jcvideoplayer-lib'
