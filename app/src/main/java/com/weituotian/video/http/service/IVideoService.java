@@ -1,6 +1,8 @@
 package com.weituotian.video.http.service;
 
+import com.weituotian.video.entity.CommentVo;
 import com.weituotian.video.entity.FrontVideo;
+import com.weituotian.video.entity.PageInfo;
 import com.weituotian.video.entity.Partition;
 import com.weituotian.video.entity.RetInfo;
 import com.weituotian.video.entity.User;
@@ -43,4 +45,10 @@ public interface IVideoService {
 
     @POST("video/av/getSrc")
     Observable<Result<RetInfo<String>>> getVideoSrc(@Query("videoId") Integer videoId);
+
+    @POST("video/av/comments")
+    Observable<Result<RetInfo<PageInfo<CommentVo>>>> getComments(@Query("videoId") Integer videoId, @Query("page") Integer page, @Query("size") Integer size);
+
+    @POST("member/my/addcomment")
+    Observable<Result<RetInfo<String>>> addComment(@Query("videoId") Integer videoId, @Query("content") String content);
 }

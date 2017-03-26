@@ -33,8 +33,11 @@ import com.flyco.tablayout.SlidingTabLayout;
 
 import com.weituotian.mycommonvideo.view.VideoPlayerView;
 import com.weituotian.video.R;
+import com.weituotian.video.entity.CommentVo;
 import com.weituotian.video.entity.FrontVideo;
+import com.weituotian.video.entity.PageInfo;
 import com.weituotian.video.event.AppBarStateChangeEvent;
+import com.weituotian.video.fragment.VideoCommentFragment;
 import com.weituotian.video.fragment.VideoIntroductionFragment;
 import com.weituotian.video.mvpview.IVideoInfoView;
 import com.weituotian.video.presenter.VideoInfoPresenter;
@@ -281,17 +284,19 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
 
 
         titles.add("简介");
-//        titles.add("评论");
+        titles.add("评论");
 
         VideoIntroductionFragment mVideoIntroductionFragment = VideoIntroductionFragment.newInstance(frontVideo);
         fragments.add(mVideoIntroductionFragment);
+        VideoCommentFragment videoCommentFragment = VideoCommentFragment.newInstance(videoId);
+        fragments.add(videoCommentFragment);
 
-
-        VideoDetailsPagerAdapter mAdapter = new VideoDetailsPagerAdapter(getSupportFragmentManager(), fragments, titles);
+        final VideoDetailsPagerAdapter mAdapter = new VideoDetailsPagerAdapter(getSupportFragmentManager(), fragments, titles);
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(titles.size());
         mSlidingTabLayout.setViewPager(mViewPager);
+
         measureTabLayoutTextWidth(0);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -337,6 +342,15 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
                     //去获得播放视频源
                     presenter.getVideoSrc(videoId);
                 }
+            }
+        });
+
+        videoCommentFragment.setListener(new VideoCommentFragment.listener() {
+            @Override
+            public void onLoaded(PageInfo<CommentVo> pageInfo) {
+                titles.set(1, "评论(" + String.valueOf(pageInfo.getTotal()) + ")");
+                mAdapter.notifyDataSetChanged();
+                mSlidingTabLayout.notifyDataSetChanged();
             }
         });
     }
