@@ -14,7 +14,7 @@ import java.util.Set;
  * Created by Administrator on 2017-03-15.
  */
 
-public class MainPagerAdapter extends FragmentPagerAdapter {
+public class HomePagerAdapter extends FragmentPagerAdapter {
 
     private String[] TITLES;
     private BaseFragment[] fragments;
@@ -22,9 +22,9 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     /*private List<String> tabIndicators;
     private Set<Fragment> tabFragments;*/
 
-    public MainPagerAdapter(FragmentManager fm) {
+    public HomePagerAdapter(FragmentManager fm) {
         super(fm);
-        TITLES = new String[]{"json1", "json2", "json3"};
+        TITLES = new String[]{"BiliBili热门"};
         fragments = new BaseFragment[TITLES.length];
     }
 
@@ -48,13 +48,6 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
         return fragments[position];
     }
 
-    public void refreshData(int position) {
-        if (fragments[position] != null) {
-            //让那个fragment上拉刷新数据
-            fragments[position].loadData(true);
-        }
-    }
-
     @Override
     public int getCount() {
         return TITLES.length;
@@ -63,6 +56,13 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return TITLES[position];
+    }
+
+    public void refreshData(int position) {
+        if (fragments[position] != null) {
+            //让那个fragment上拉刷新数据
+            fragments[position].loadData(true);
+        }
     }
 
 }

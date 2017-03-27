@@ -13,4 +13,8 @@ public interface IMainView extends MvpView {
     void setNoLogin(String msg);
 
     void onLoginError(Throwable e);
+
+    void onLogoutSuccess();
+
+    void onLogoutError(Throwable e);
 }

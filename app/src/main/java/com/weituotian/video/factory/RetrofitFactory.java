@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.weituotian.video.VideoApp;
 import com.weituotian.video.http.service.IBiliService;
+import com.weituotian.video.http.service.ICollectService;
+import com.weituotian.video.http.service.IStarService;
 import com.weituotian.video.http.service.IUserService;
 import com.weituotian.video.http.service.IVideoService;
 import com.weituotian.video.utils.CommonUtil;
@@ -37,6 +39,8 @@ public class RetrofitFactory {
     private static volatile IBiliService biliService;
     private static volatile IUserService userService;
     private static volatile IVideoService videoService;
+    private static volatile ICollectService collectService;
+    private static volatile IStarService starService;
 
     private static RxJavaCallAdapterFactory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
 
@@ -125,6 +129,17 @@ public class RetrofitFactory {
         return retrofit.create(IBiliService.class);
     }
 
+    private static IUserService createUserService() {
+
+        OkHttpClient client = getOkhttpBuilder().build();
+
+        Retrofit retrofit = getRetrofitBuilder()
+                .baseUrl(BASE_SERVER_URL)
+                .client(client)
+                .build();
+        return retrofit.create(IUserService.class);
+    }
+
     public static IUserService getUserService() {
 
         if (userService == null) {
@@ -137,23 +152,12 @@ public class RetrofitFactory {
         return userService;
     }
 
-    private static IUserService createUserService() {
-
-        OkHttpClient client = getOkhttpBuilder().build();
-
-        Retrofit retrofit = getRetrofitBuilder()
-                .baseUrl("http://192.168.1.107:8080/webx/")
-                .client(client)
-                .build();
-        return retrofit.create(IUserService.class);
-    }
-
     private static IVideoService createVideoService() {
 
         OkHttpClient client = getOkhttpBuilder().build();
 
         Retrofit retrofit = getRetrofitBuilder()
-                .baseUrl("http://192.168.1.107:8080/webx/")
+                .baseUrl(BASE_SERVER_URL)
                 .client(client)
                 .build();
         return retrofit.create(IVideoService.class);
@@ -171,5 +175,49 @@ public class RetrofitFactory {
         return videoService;
     }
 
+    private static ICollectService createCollectService() {
 
+        OkHttpClient client = getOkhttpBuilder().build();
+
+        Retrofit retrofit = getRetrofitBuilder()
+                .baseUrl(BASE_SERVER_URL)
+                .client(client)
+                .build();
+        return retrofit.create(ICollectService.class);
+    }
+
+    public static ICollectService getCollectService() {
+
+        if (collectService == null) {
+            synchronized (RetrofitFactory.class) {
+                if (collectService == null) {
+                    collectService = createCollectService();
+                }
+            }
+        }
+        return collectService;
+    }
+
+    private static IStarService createStarService() {
+
+        OkHttpClient client = getOkhttpBuilder().build();
+
+        Retrofit retrofit = getRetrofitBuilder()
+                .baseUrl(BASE_SERVER_URL)
+                .client(client)
+                .build();
+        return retrofit.create(IStarService.class);
+    }
+
+    public static IStarService getStarService() {
+
+        if (starService == null) {
+            synchronized (RetrofitFactory.class) {
+                if (starService == null) {
+                    starService = createStarService();
+                }
+            }
+        }
+        return starService;
+    }
 }

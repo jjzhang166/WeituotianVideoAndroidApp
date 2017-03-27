@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,7 @@ import com.weituotian.video.entity.PageInfo;
 import com.weituotian.video.entity.VideoListVo;
 import com.weituotian.video.entity.enums.SexEnum;
 import com.weituotian.video.event.AppBarStateChangeEvent;
+import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.mvpview.IMemberInfoView;
 import com.weituotian.video.presenter.MemberInfoPresenter;
 import com.weituotian.video.utils.SystemBarHelper;
@@ -43,6 +45,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -91,6 +94,8 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
     @BindView(R.id.rv_videolist)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.star)
+    TextView mStar;
 
     //传过来的userid
     private int userID;
@@ -116,6 +121,16 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
     private View loadMoreView;
     private View noMoreView;
 
+    public static void launch(Activity activity, int userId) {
+
+        Intent intent = new Intent(activity, MemberInfoDetailsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.putExtra(EXTRA_USER_NAME, name);
+        intent.putExtra(EXTRA_USERID, userId);
+//        intent.putExtra(EXTRA_AVATAR_URL, avatar_url);
+        activity.startActivity(intent);
+    }
+
     @Override
     public int getContentViewId() {
         return R.layout.activity_user_info;
@@ -128,9 +143,22 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
         userID = intent.getIntExtra(EXTRA_USERID, -1);
         presenter.getMemberInfo(userID);
 
+        if (LoginContext.isLogin()) {
+            //如果是自己的话隐藏关注按钮
+            if (userID == LoginContext.user.getId()) {
+                mStar.setVisibility(View.GONE);
+            }
+        }
+
         initToolBar();
         initRecycleView();
 
+    }
+
+    @NonNull
+    @Override
+    public MemberInfoPresenter createPresenter() {
+        return new MemberInfoPresenter();
     }
 
     public void initToolBar() {
@@ -224,11 +252,6 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
         loadMoreView.setVisibility(View.VISIBLE);
     }
 
-    @NonNull
-    @Override
-    public MemberInfoPresenter createPresenter() {
-        return new MemberInfoPresenter();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -252,33 +275,17 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
         }
     }
 
-    private void setUserLevel(int rank) {
 
-        /*if (rank == 0) {
-            mUserLv.setImageResource(R.drawable.ic_lv0);
-        } else if (rank == 1) {
-            mUserLv.setImageResource(R.drawable.ic_lv1);
-        } else if (rank == 200) {
-            mUserLv.setImageResource(R.drawable.ic_lv2);
-        } else if (rank == 1500) {
-            mUserLv.setImageResource(R.drawable.ic_lv3);
-        } else if (rank == 3000) {
-            mUserLv.setImageResource(R.drawable.ic_lv4);
-        } else if (rank == 7000) {
-            mUserLv.setImageResource(R.drawable.ic_lv5);
-        } else if (rank == 10000) {
-            mUserLv.setImageResource(R.drawable.ic_lv6);
-        }*/
-    }
-
-    public static void launch(Activity activity, int userId) {
-
-        Intent intent = new Intent(activity, MemberInfoDetailsActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.putExtra(EXTRA_USER_NAME, name);
-        intent.putExtra(EXTRA_USERID, userId);
-//        intent.putExtra(EXTRA_AVATAR_URL, avatar_url);
-        activity.startActivity(intent);
+    //点击关注
+    @OnClick(R.id.star)
+    void star() {
+        //要关注的人id
+        Integer memberId = appMember.getId();
+        if (mStar.getText().toString().equals(getResources().getString(R.string.star))) {
+            presenter.starMember(memberId);
+        } else {
+            presenter.cancelStar(memberId);
+        }
     }
 
     /*以下实现view的接口*/
@@ -348,4 +355,43 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
         noMoreView.setVisibility(View.VISIBLE);
         loadMoreView.setVisibility(View.GONE);
     }
+
+
+    private void setStar() {
+        mStar.setText(getResources().getString(R.string.star));
+    }
+
+    private void setCancelStar() {
+        mStar.setText(getResources().getString(R.string.cancel_star));
+    }
+
+    @Override
+    public void onCheckStar(boolean isCheck) {
+        if (isCheck) {
+            setCancelStar();
+        } else {
+            setStar();
+        }
+    }
+
+    @Override
+    public void onStarMemberSuccess() {
+        setCancelStar();
+    }
+
+    @Override
+    public void onStarMemberError(Throwable throwable) {
+        UIUtil.showToast(this, throwable.getMessage());
+    }
+
+    @Override
+    public void onCancelStarMemberSuccess() {
+        setStar();
+    }
+
+    @Override
+    public void onCancelStarMemberError(Throwable throwable) {
+        UIUtil.showToast(this, throwable.getMessage());
+    }
+
 }

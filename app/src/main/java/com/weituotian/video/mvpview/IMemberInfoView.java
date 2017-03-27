@@ -16,4 +16,14 @@ public interface IMemberInfoView extends MvpView{
     void onLoadMemberInfoError(Throwable e);
 
     void onLoadVideos(PageInfo<VideoListVo> pageInfo);
+
+    void onCheckStar(boolean isCheck);
+
+    void onStarMemberSuccess();
+
+    void onStarMemberError(Throwable throwable);
+
+    void onCancelStarMemberSuccess();
+
+    void onCancelStarMemberError(Throwable throwable);
 }

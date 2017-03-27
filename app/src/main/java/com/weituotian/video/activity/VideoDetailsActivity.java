@@ -24,7 +24,6 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -39,8 +38,8 @@ import com.weituotian.video.entity.PageInfo;
 import com.weituotian.video.event.AppBarStateChangeEvent;
 import com.weituotian.video.fragment.VideoCommentFragment;
 import com.weituotian.video.fragment.VideoIntroductionFragment;
-import com.weituotian.video.mvpview.IVideoInfoView;
-import com.weituotian.video.presenter.VideoInfoPresenter;
+import com.weituotian.video.mvpview.IVideoPlayView;
+import com.weituotian.video.presenter.VideoPlayPresenter;
 import com.weituotian.video.utils.DisplayUtil;
 import com.weituotian.video.utils.SystemBarHelper;
 import com.weituotian.video.utils.UIUtil;
@@ -50,13 +49,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayer;
 import fm.jiecao.jcvideoplayer_lib.JCVideoPlayerStandard;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by hcc on 16/8/4 21:18
@@ -64,7 +61,7 @@ import rx.schedulers.Schedulers;
  * <p/>
  * 视频详情界面
  */
-public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoInfoPresenter> implements IVideoInfoView {
+public class VideoDetailsActivity extends BaseMvpActivity<IVideoPlayView, VideoPlayPresenter> implements IVideoPlayView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -180,8 +177,8 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
 
     @NonNull
     @Override
-    public VideoInfoPresenter createPresenter() {
-        return new VideoInfoPresenter();
+    public VideoPlayPresenter createPresenter() {
+        return new VideoPlayPresenter();
     }
 
     @SuppressLint("SetTextI18n")
@@ -345,6 +342,7 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoInfoView, VideoI
             }
         });
 
+        //更新tab标题的评论显示总数
         videoCommentFragment.setListener(new VideoCommentFragment.listener() {
             @Override
             public void onLoaded(PageInfo<CommentVo> pageInfo) {

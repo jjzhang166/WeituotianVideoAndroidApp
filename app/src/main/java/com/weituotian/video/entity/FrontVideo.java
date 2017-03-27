@@ -40,6 +40,7 @@ public class FrontVideo implements Parcelable {
     private Date createTime;
 
     //上传者
+    private Integer memberId;
     private String memberName;
     private String memberCover;
 
@@ -57,6 +58,14 @@ public class FrontVideo implements Parcelable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Integer getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
     }
 
     public String getMemberCover() {
@@ -190,6 +199,7 @@ public class FrontVideo implements Parcelable {
         dest.writeValue(this.totalTime);
         dest.writeValue(this.collect);
         dest.writeLong(this.createTime != null ? this.createTime.getTime() : -1);
+        dest.writeValue(this.memberId);
         dest.writeString(this.memberName);
         dest.writeString(this.memberCover);
         dest.writeInt(this.videoState == null ? -1 : this.videoState.ordinal());
@@ -209,6 +219,7 @@ public class FrontVideo implements Parcelable {
         this.collect = (Integer) in.readValue(Integer.class.getClassLoader());
         long tmpCreateTime = in.readLong();
         this.createTime = tmpCreateTime == -1 ? null : new Date(tmpCreateTime);
+        this.memberId = (Integer) in.readValue(Integer.class.getClassLoader());
         this.memberName = in.readString();
         this.memberCover = in.readString();
         int tmpVideoState = in.readInt();

@@ -131,7 +131,7 @@
 
 
             <LinearLayout
-                android:id="@+id/btn_fav"
+                android:id="@+id/btn_collect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -146,12 +146,14 @@
                     android:textColor="@color/colorAccent" />
 
                 <ImageButton
+                    android:id="@+id/collect_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/daily_video_action_bg"
                     android:src="@drawable/ic_star_black_24dp" />
 
                 <TextView
+                    android:id="@+id/collect_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/default_tiny_padding"
@@ -191,6 +193,7 @@
                 android:text="韦驮天" />
 
             <TextView
+                android:id="@+id/star"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -198,7 +201,7 @@
                 android:layout_centerInParent="true"
                 android:background="@drawable/btn_pin_bg"
                 android:gravity="center"
-                android:text="关注"
+                android:text="@string/star"
                 android:textColor="@color/focus_text_color" />
 
         </RelativeLayout>

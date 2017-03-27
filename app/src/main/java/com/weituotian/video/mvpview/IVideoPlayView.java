@@ -7,7 +7,7 @@ import com.weituotian.video.entity.FrontVideo;
  * Created by ange on 2017/3/24.
  */
 
-public interface IVideoInfoView extends MvpView{
+public interface IVideoPlayView extends MvpView{
 
     void onLoadVideoInfo(FrontVideo frontVideo);
 

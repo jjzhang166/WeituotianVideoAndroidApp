@@ -10,11 +10,13 @@ import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.mvpview.IMainView;
 import com.weituotian.video.presenter.base.BasePresenter;
+import com.weituotian.video.presenter.func1.ResultToEntityFunc1;
 import com.weituotian.video.presenter.func1.ResultToRetInfoFun1;
 import com.weituotian.video.utils.UIUtil;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.weituotian.video.http.LoginContext.logout;
@@ -57,4 +59,26 @@ public class MainPresenter extends BasePresenter<IMainView> {
                 });
     }
 
+    public void logout() {
+        RetrofitFactory.getUserService().logout()
+                .flatMap(new ResultToRetInfoFun1<String>())
+                .compose(this.<RetInfo<String>>bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RetInfo<String>>() {
+                    @Override
+                    public void call(RetInfo<String> retInfo) {
+                        if (retInfo.isSuccess()) {
+                            getView().onLogoutSuccess();
+                        } else {
+                            getView().onLoginError(new Throwable(retInfo.getMsg()));
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        getView().onLoginError(throwable);
+                    }
+                });
+    }
 }

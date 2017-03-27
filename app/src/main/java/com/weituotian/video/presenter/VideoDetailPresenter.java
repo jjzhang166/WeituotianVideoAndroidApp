@@ -1,11 +1,8 @@
 package com.weituotian.video.presenter;
 
-import com.weituotian.video.entity.AppMember;
-import com.weituotian.video.entity.PageInfo;
-import com.weituotian.video.entity.VideoListVo;
 import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.http.provider.StarProvider;
-import com.weituotian.video.mvpview.IMemberInfoView;
+import com.weituotian.video.mvpview.IVideoDetailView;
 import com.weituotian.video.presenter.base.BasePresenter;
 import com.weituotian.video.presenter.func1.ResultToEntityFunc1;
 
@@ -14,44 +11,78 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by ange on 2017/3/22.
+ * Created by ange on 2017/3/27.
  */
 
-public class MemberInfoPresenter extends BasePresenter<IMemberInfoView> {
+public class VideoDetailPresenter extends BasePresenter<IVideoDetailView> {
 
-    public void getMemberInfo(Integer userId) {
-        RetrofitFactory.getUserService().getMemberInfo(userId)
-                .flatMap(new ResultToEntityFunc1<AppMember>())
+    public void checkCollect(Integer videoId) {
+        RetrofitFactory.getCollectService().checkCollect(videoId)
+                .flatMap(new ResultToEntityFunc1<Boolean>())
+                .compose(this.<Boolean>bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<AppMember>() {
+                .subscribe(new Action1<Boolean>() {
                     @Override
-                    public void call(AppMember appMember) {
-                        getView().onLoadMemberInfoSuccess(appMember);
+                    public void call(Boolean isCheck) {
+                        getView().onCheckCollect(isCheck);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        getView().onLoadMemberInfoError(throwable);
+
                     }
                 });
     }
 
-    public void getMemberVideos(Integer userId, Integer page, Integer pageSize) {
-        RetrofitFactory.getUserService().getMemberVideos(userId, page, pageSize)
-                .flatMap(new ResultToEntityFunc1<PageInfo<VideoListVo>>())
+    private boolean sending = false;
+
+    public void collect(Integer videoId) {
+        if (sending) {
+            return;
+        }
+        sending = true;
+        RetrofitFactory.getCollectService().collect(videoId)
+                .flatMap(new ResultToEntityFunc1<Integer>())
+                .compose(this.<Integer>bindToLifecycle())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<PageInfo<VideoListVo>>() {
+                .subscribe(new Action1<Integer>() {
                     @Override
-                    public void call(PageInfo<VideoListVo> pageInfo) {
-                        getView().onLoadVideos(pageInfo);
+                    public void call(Integer integer) {
+                        getView().onCollectSuccess(integer);
+                        sending = false;
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
+                        getView().onCollectError(throwable);
+                        sending = false;
+                    }
+                });
+    }
 
+    public void cancelCollect(Integer videoId) {
+        if (sending) {
+            return;
+        }
+        sending = true;
+        RetrofitFactory.getCollectService().cancelCollect(videoId)
+                .flatMap(new ResultToEntityFunc1<Integer>())
+                .compose(this.<Integer>bindToLifecycle())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        getView().onCancelCollectSuccess(integer);
+                        sending = false;
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        getView().onCancelCollectError(throwable);
+                        sending = false;
                     }
                 });
     }

@@ -1,5 +1,6 @@
 package com.weituotian.video.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,10 +9,12 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
+import com.weituotian.video.GlobalConstant;
 import com.weituotian.video.R;
 import com.weituotian.video.mvpview.ILoginView;
 import com.weituotian.video.presenter.LoginPresenter;
@@ -49,6 +52,11 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
     @BindView(R.id.toolbar_simple)
     Toolbar mToolbar;
 
+    public static void launch(Activity activity) {
+        Intent intent = new Intent(activity, LoginActivity.class);
+        activity.startActivityForResult(intent, GlobalConstant.REQUEST_CODE_LOGIN);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +66,15 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
         initToolBar();
 
         Intent intent = getIntent();//获得从mainactivity传来的数据
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initToolBar() {

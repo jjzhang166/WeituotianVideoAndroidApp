@@ -45,8 +45,10 @@ public class BrowserActivity extends AppCompatActivity {
 
     @BindView(R.id.wv_broswer)
     WebView mBroswer;
+
     @BindView(R.id.toolbar_simple)
     Toolbar mToolbar;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

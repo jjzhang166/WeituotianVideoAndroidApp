@@ -22,4 +22,11 @@
     <string name="menu_search">搜索</string>
     <string name="load_complete">加载完成</string>
     <string name="feedback_hit_comment">发送评论</string>
+
+    <string name="to_ollect">收藏</string>
+    <string name="cancel_ollect">取消收藏</string>
+    <string name="star">关注</string>
+    <string name="cancel_star">取消关注</string>
+    <string name="drawer_open">打开</string>
+    <string name="drawer_close">关闭</string>
 </resources>
