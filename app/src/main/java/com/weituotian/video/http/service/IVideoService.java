@@ -6,6 +6,7 @@ import com.weituotian.video.entity.PageInfo;
 import com.weituotian.video.entity.Partition;
 import com.weituotian.video.entity.RetInfo;
 import com.weituotian.video.entity.User;
+import com.weituotian.video.entity.VideoListVo;
 
 import java.util.List;
 import java.util.Map;
@@ -32,14 +33,6 @@ public interface IVideoService {
     @GET("video/av/partitions")
     Observable<Result<RetInfo<List<Partition>>>> getPartitions();
 
-    @POST("member/video/ajaxvideo")
-    @Multipart
-    Observable<Result<RetInfo<Integer>>> uploadVideo(@QueryMap Map<String, String> options,
-                                                     @PartMap Map<String, RequestBody> externalFileParameters);
-
-    @POST("member/video/doadd")
-    Observable<Result<RetInfo<String>>> submitVideo(@QueryMap Map<String, String> options);
-
     @POST("video/av/info")
     Observable<Result<RetInfo<FrontVideo>>> getVideoInfo(@Query("videoId") Integer videoId);
 
@@ -48,6 +41,26 @@ public interface IVideoService {
 
     @POST("video/av/comments")
     Observable<Result<RetInfo<PageInfo<CommentVo>>>> getComments(@Query("videoId") Integer videoId, @Query("page") Integer page, @Query("size") Integer size);
+
+    /**
+     * 获得视频列表
+     * @param partitionId 分区id
+     * @param page 当前页码
+     * @param size 页面大小
+     * @return
+     */
+    @POST("video/av/partition_videos")
+    Observable<Result<RetInfo<PageInfo<VideoListVo>>>> getParititionVideos(@Query("partitionId") Integer partitionId, @Query("page") Integer page, @Query("size") Integer size);
+
+
+    @POST("member/video/ajaxvideo")
+    @Multipart
+    Observable<Result<RetInfo<Integer>>> uploadVideo(@QueryMap Map<String, String> options,
+                                                     @PartMap Map<String, RequestBody> externalFileParameters);
+
+    @POST("member/video/doadd")
+    Observable<Result<RetInfo<String>>> submitVideo(@QueryMap Map<String, String> options);
+
 
     @POST("member/my/addcomment")
     Observable<Result<RetInfo<String>>> addComment(@Query("videoId") Integer videoId, @Query("content") String content);

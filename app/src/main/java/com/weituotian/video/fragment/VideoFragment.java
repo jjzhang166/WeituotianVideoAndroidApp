@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.weituotian.video.R;
-import com.weituotian.video.adapter.VideoAdapter;
+import com.weituotian.video.adapter.BiliVideoAdapter;
 import com.weituotian.video.entity.BiliDingVideo;
 import com.weituotian.video.mvpview.IVideoView;
 import com.weituotian.video.presenter.base.VideoPresenter;
@@ -43,7 +43,7 @@ public abstract class VideoFragment extends
     CommonRecyclerView mRecyclerView;
 
     private View mFooterView;//显示加载中的view
-    private VideoAdapter mVideoAdapter;
+    private BiliVideoAdapter mBiliVideoAdapter;
     private boolean mIsFirstLoad = true;
 
     @Override
@@ -74,11 +74,11 @@ public abstract class VideoFragment extends
         mRecyclerView.setOnLoadMoreListener(this);
 
         //adapter
-        mVideoAdapter = new VideoAdapter(mContext);
-        mVideoAdapter.enableFooterView();
+        mBiliVideoAdapter = new BiliVideoAdapter(mContext);
+        mBiliVideoAdapter.enableFooterView();
         mFooterView = LayoutInflater.from(mContext).inflate(R.layout.item_footer, mRecyclerView, false);
-        mVideoAdapter.addFooterView(mFooterView);
-        mRecyclerView.setAdapter(mVideoAdapter);
+        mBiliVideoAdapter.addFooterView(mFooterView);
+        mRecyclerView.setAdapter(mBiliVideoAdapter);
 
 
         //暂时无用
@@ -167,15 +167,15 @@ public abstract class VideoFragment extends
 
     @Override
     public void setData(List<BiliDingVideo.VideoBean> data) {
-        mVideoAdapter.reset(data);
-//            mVideoAdapter.addAll(data, 0);//从第0个开始增加
+        mBiliVideoAdapter.reset(data);
+//            mBiliVideoAdapter.addAll(data, 0);//从第0个开始增加
 
     }
 
     @Override
     public void setLoadMoreData(List<BiliDingVideo.VideoBean> videos) {
 
-        mVideoAdapter.addAll(videos);//从最后面开始增加
+        mBiliVideoAdapter.addAll(videos);//从最后面开始增加
     }
 
     /**
@@ -217,7 +217,7 @@ public abstract class VideoFragment extends
     public void onDestroyView() {
 
         super.onDestroyView();
-        mVideoAdapter = null;
+        mBiliVideoAdapter = null;
         mIsFirstLoad = true;
     }
 }

@@ -4,10 +4,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.weituotian.video.entity.Partition;
 import com.weituotian.video.fragment.BaseFragment;
+import com.weituotian.video.fragment.BaseMvpLceFragment;
 import com.weituotian.video.fragment.BiliFragment;
+import com.weituotian.video.fragment.MyVideoListFragment;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -16,53 +21,106 @@ import java.util.Set;
 
 public class HomePagerAdapter extends FragmentPagerAdapter {
 
-    private String[] TITLES;
-    private BaseFragment[] fragments;
+    /*private String[] TITLES;
+    private BaseMvpLceFragment[] fragments;
+
+    private List<BaseMvpLceFragment> fragmentList;
+    private List<Partition> partitions;*/
 
     /*private List<String> tabIndicators;
     private Set<Fragment> tabFragments;*/
 
+    private List<Item> items = new ArrayList<>();
+
+    public void addFragment(Listener listener, String title) {
+        items.add(new Item(null, listener, title));
+        notifyDataSetChanged();
+    }
+
+    public void addFragment(int position, Listener listener, String title) {
+        items.add(position, new Item(null, listener, title));
+        notifyDataSetChanged();
+    }
+
     public HomePagerAdapter(FragmentManager fm) {
         super(fm);
-        TITLES = new String[]{"BiliBili热门"};
-        fragments = new BaseFragment[TITLES.length];
+//        TITLES = new String[]{"BiliBili热门"};
+//        fragments = new BaseMvpLceFragment[TITLES.length];
     }
 
     @Override
     public Fragment getItem(int position) {//从0开始算
-        if (fragments[position] == null) {
-            switch (position) {
-                case 0:
-                    fragments[position] = BiliFragment.newInstance(1);
-                    break;
-                case 1:
-                    fragments[position] = BiliFragment.newInstance(4);
-                    break;
-                case 2:
-                    fragments[position] = BiliFragment.newInstance(12);
-                    break;
-                default:
-                    break;
-            }
+        Item item = items.get(position);
+        Fragment fragment = item.getFragment();
+        if (fragment == null) {
+            fragment = item.getListener().onLazyCreate();
+            item.setFragment(fragment);
         }
-        return fragments[position];
+        return fragment;
+        /*if (fragments[position] == null) {
+
+            Integer partitionId = partitions.get(position).getId();
+            fragments[position] = MyVideoListFragment.newInstance(partitionId);
+
+        }
+        return fragments[position];*/
     }
 
     @Override
     public int getCount() {
-        return TITLES.length;
+        return items.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return TITLES[position];
+        return items.get(position).getTitle();
     }
 
     public void refreshData(int position) {
-        if (fragments[position] != null) {
+/*        if (fragments[position] != null) {
             //让那个fragment上拉刷新数据
             fragments[position].loadData(true);
+        }*/
+    }
+
+
+    public class Item {
+        Fragment fragment;
+        Listener listener;
+        String title;
+
+        public Item(BaseMvpLceFragment fragment, Listener listener, String title) {
+            this.fragment = fragment;
+            this.listener = listener;
+            this.title = title;
+        }
+
+        public Fragment getFragment() {
+            return fragment;
+        }
+
+        public void setFragment(Fragment fragment) {
+            this.fragment = fragment;
+        }
+
+        public Listener getListener() {
+            return listener;
+        }
+
+        public void setListener(Listener listener) {
+            this.listener = listener;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
     }
 
+    public interface Listener {
+        Fragment onLazyCreate();
+    }
 }

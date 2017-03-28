@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -48,7 +49,7 @@ import butterknife.OnClick;
  * Created by ange on 2017/3/27.
  */
 
-public class HomeFragment extends BaseMvpFragment<IHomeView,HomePresenter> implements IHomeView {
+public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> implements IHomeView {
 
     @BindView(R.id.toolbar_user_avatar)
     CircleImageView mUserAvatar;
@@ -73,6 +74,7 @@ public class HomeFragment extends BaseMvpFragment<IHomeView,HomePresenter> imple
 
     private HomePagerAdapter contentAdapter;
 
+    @NonNull
     @Override
     public HomePresenter createPresenter() {
         return new HomePresenter();
@@ -87,6 +89,8 @@ public class HomeFragment extends BaseMvpFragment<IHomeView,HomePresenter> imple
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         ButterKnife.bind(this, view);
         setHasOptionsMenu(true);
         initContent();//初始化内容页
@@ -96,24 +100,22 @@ public class HomeFragment extends BaseMvpFragment<IHomeView,HomePresenter> imple
     }
 
     private void initContent() {
-
-        //adapter
-        contentAdapter = new HomePagerAdapter(getChildFragmentManager());
-        mViewPager.setAdapter(contentAdapter);
-
         //设置页面缓存数量
         mViewPager.setOffscreenPageLimit(3);
 
         //设置当前fragment
         mViewPager.setCurrentItem(1);
 
-        mFabRefresh.setOnClickListener(new View.OnClickListener() {
+        //adapter
+        contentAdapter = new HomePagerAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(contentAdapter);
+
+        contentAdapter.addFragment(new HomePagerAdapter.Listener() {
             @Override
-            public void onClick(View v) {
-                int curPosition = mViewPager.getCurrentItem();
-                contentAdapter.refreshData(curPosition);
+            public Fragment onLazyCreate() {
+                return BiliFragment.newInstance(4);
             }
-        });
+        }, "bilibili热门");
     }
 
     private void initTab() {
@@ -211,10 +213,27 @@ public class HomeFragment extends BaseMvpFragment<IHomeView,HomePresenter> imple
     @Override
     public void onLoadPartitions(List<Partition> partitions) {
 
+        for (Partition partition : partitions) {
+            final Integer pid = partition.getId();
+            contentAdapter.addFragment(new HomePagerAdapter.Listener() {
+                @Override
+                public BaseMvpLceFragment onLazyCreate() {
+                    return MyVideoListFragment.newInstance(pid);
+                }
+            }, partition.getName());
+        }
+
+        /*mFabRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int curPosition = mViewPager.getCurrentItem();
+                contentAdapter.refreshData(curPosition);
+            }
+        });*/
     }
 
     @Override
     public void onLoadPartitionsError(Throwable e) {
-        UIUtil.showToast(getActivity(),e.getMessage());
+        UIUtil.showToast(getActivity(), e.getMessage());
     }
 }

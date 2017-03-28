@@ -11,4 +11,5 @@ import java.util.List;
 
 public interface IMyVideoListView extends MvpLceView<List<VideoListVo>> {
 
+    void onLoadMoreData(List<VideoListVo> vos);
 }

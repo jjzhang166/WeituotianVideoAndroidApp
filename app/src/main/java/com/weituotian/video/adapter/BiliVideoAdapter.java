@@ -23,15 +23,15 @@ import butterknife.ButterKnife;
  * @author: laohu on 2016/8/24
  * @site: http://ittiger.cn
  */
-public class VideoAdapter extends HeaderAndFooterAdapter<BiliDingVideo.VideoBean> {
+public class BiliVideoAdapter extends HeaderAndFooterAdapter<BiliDingVideo.VideoBean> {
 
     private Context mContext;
 
-    public VideoAdapter(Context mContext) {
+    public BiliVideoAdapter(Context mContext) {
         this.mContext = mContext;
     }
 
-    public VideoAdapter(Context context, List<BiliDingVideo.VideoBean> list) {
+    public BiliVideoAdapter(Context context, List<BiliDingVideo.VideoBean> list) {
 
         super(list);
         mContext = context;
