@@ -21,15 +21,6 @@ import java.util.Set;
 
 public class HomePagerAdapter extends FragmentPagerAdapter {
 
-    /*private String[] TITLES;
-    private BaseMvpLceFragment[] fragments;
-
-    private List<BaseMvpLceFragment> fragmentList;
-    private List<Partition> partitions;*/
-
-    /*private List<String> tabIndicators;
-    private Set<Fragment> tabFragments;*/
-
     private List<Item> items = new ArrayList<>();
 
     public void addFragment(Listener listener, String title) {
@@ -44,8 +35,6 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
 
     public HomePagerAdapter(FragmentManager fm) {
         super(fm);
-//        TITLES = new String[]{"BiliBili热门"};
-//        fragments = new BaseMvpLceFragment[TITLES.length];
     }
 
     @Override
@@ -75,14 +64,6 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return items.get(position).getTitle();
     }
-
-    public void refreshData(int position) {
-/*        if (fragments[position] != null) {
-            //让那个fragment上拉刷新数据
-            fragments[position].loadData(true);
-        }*/
-    }
-
 
     public class Item {
         Fragment fragment;

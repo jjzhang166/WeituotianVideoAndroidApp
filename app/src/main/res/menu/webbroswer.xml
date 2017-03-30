@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_refresh"
-        android:icon="@drawable/ic_refresh_purple_a400_18dp"
+        android:icon="@drawable/ic_refresh_black_24dp"
         android:orderInCategory="100"
-        android:title="刷新"
+        android:title="@string/browswer_refresh"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_forward"
         android:icon="@drawable/ic_arrow_forward_black_24dp"
         android:orderInCategory="100"
-        android:title="前进"
-        app:showAsAction="always" />
+        android:title="@string/browswer_forward"
+        app:showAsAction="ifRoom" />
 </menu>

@@ -49,10 +49,6 @@ public class LoginContext {
         sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(context);
     }
 
-    /*public static List<Cookie> getCookies() {
-        return setCookieCache.iterator();
-    }*/
-
     public static String getSessionId() {
         for (Cookie next : sharedPrefsCookiePersistor.loadAll()) {
             if (next.name().equals(SESSION_ID_NAME)) {

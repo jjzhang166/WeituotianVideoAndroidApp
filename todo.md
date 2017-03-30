@@ -5,3 +5,4 @@
 - mainactivity的布局添加framelayout,将appbar和viewpager移到新fragment
 - 菜单点击没有动画
 - retrofit缓存,暂停或者取消
+- 我的关注

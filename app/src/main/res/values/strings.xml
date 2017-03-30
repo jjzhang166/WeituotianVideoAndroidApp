@@ -29,4 +29,13 @@
     <string name="cancel_star">取消关注</string>
     <string name="drawer_open">打开</string>
     <string name="drawer_close">关闭</string>
+    <string name="btn_login">登录</string>
+    <string name="btn_reg">注册</string>
+    <string name="input_username">请输入用户名</string>
+    <string name="input_email">请输入邮箱</string>
+    <string name="input_pwd">请输入密码</string>
+    <string name="input_pwd2">请输入重复密码</string>
+    <string name="input_name">请输入昵称</string>
+    <string name="browswer_refresh">刷新</string>
+    <string name="browswer_forward">前进</string>
 </resources>

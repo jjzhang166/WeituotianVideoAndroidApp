@@ -8,6 +8,7 @@ public interface GlobalConstant {
 
     public final static int REQUEST_CODE_LOGIN = 1;
     public final static int REQUEST_CODE_BROSWER = 2;
+    public final static int REQUEST_CODE_REG = 3;
 
     int HOME_FRAGMENT = 0;
     int HISTORY_FRAGMENT = 1;

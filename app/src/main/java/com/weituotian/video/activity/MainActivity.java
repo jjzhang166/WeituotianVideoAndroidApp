@@ -28,6 +28,7 @@ import com.weituotian.video.utils.UIUtil;
 import butterknife.BindView;
 
 import static com.weituotian.video.GlobalConstant.REQUEST_CODE_LOGIN;
+import static com.weituotian.video.GlobalConstant.REQUEST_CODE_REG;
 
 public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> implements IMainView {
 
@@ -176,6 +177,8 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case REQUEST_CODE_REG:
+                break;
             case REQUEST_CODE_LOGIN://登录
                 if (LoginContext.isLogin()) {
                     //已登录

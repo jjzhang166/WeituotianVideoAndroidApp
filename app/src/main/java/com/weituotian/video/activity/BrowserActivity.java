@@ -17,12 +17,10 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.weituotian.video.R;
 import com.weituotian.video.factory.RetrofitFactory;
 import com.weituotian.video.http.LoginContext;
-
-import java.util.Iterator;
+import com.weituotian.video.utils.ColorUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,8 +41,8 @@ public class BrowserActivity extends AppCompatActivity {
 
     public static final String BASE_SYSTEM_URL = RetrofitFactory.BASE_SERVER_URL + "system/index";
 
-    @BindView(R.id.wv_broswer)
-    WebView mBroswer;
+    @BindView(R.id.wv_browser)
+    WebView mBrowser;
 
     @BindView(R.id.toolbar_simple)
     Toolbar mToolbar;
@@ -87,10 +85,10 @@ public class BrowserActivity extends AppCompatActivity {
         }
 
         // enable javascript
-        mBroswer.getSettings().setJavaScriptEnabled(true);
-        mBroswer.getSettings().setLoadsImagesAutomatically(true);
-        mBroswer.getSettings().setBuiltInZoomControls(true);
-        mBroswer.setWebViewClient(new WebViewClient());
+        mBrowser.getSettings().setJavaScriptEnabled(true);
+        mBrowser.getSettings().setLoadsImagesAutomatically(true);
+        mBrowser.getSettings().setBuiltInZoomControls(true);
+        mBrowser.setWebViewClient(new WebViewClient());
 
         //设置cookies保存登录状态
         CookieSyncManager.createInstance(this);
@@ -108,7 +106,8 @@ public class BrowserActivity extends AppCompatActivity {
             CookieManager.getInstance().flush();
         }
 
-        mBroswer.loadUrl(url);
+        mBrowser.loadUrl(url);
+
     }
 
     /**
@@ -121,8 +120,8 @@ public class BrowserActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.i(TAG, "keyCode=" + keyCode);
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && mBroswer.canGoBack()) {
-            mBroswer.goBack();
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && mBrowser.canGoBack()) {
+            mBrowser.goBack();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -132,6 +131,17 @@ public class BrowserActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.webbroswer, menu);
+
+        //菜单图标着色
+        MenuItem menu_refresh = menu.findItem(R.id.menu_refresh);
+        MenuItem menu_forward = menu.findItem(R.id.menu_forward);
+        if (menu_refresh != null) {
+            ColorUtil.tintMenuIcon(this, menu_refresh, android.R.color.holo_red_light);
+        }
+        if (menu_forward != null) {
+            ColorUtil.tintMenuIcon(this, menu_forward, android.R.color.holo_red_light);
+        }
+
         return true;
     }
 
@@ -141,7 +151,7 @@ public class BrowserActivity extends AppCompatActivity {
             case R.id.menu_forward:
                 break;
             case R.id.menu_refresh:
-                mBroswer.reload();
+                mBrowser.reload();
                 break;
             case android.R.id.home:
                 onBackPressed();
@@ -154,8 +164,8 @@ public class BrowserActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mBroswer.destroy();
-        mBroswer = null;
+        mBrowser.destroy();
+        mBrowser = null;
     }
 
     @Override

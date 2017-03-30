@@ -1,6 +1,7 @@
 package com.weituotian.video.presenter;
 
 import com.weituotian.video.factory.RetrofitFactory;
+import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.http.provider.StarProvider;
 import com.weituotian.video.mvpview.IVideoDetailView;
 import com.weituotian.video.presenter.base.BasePresenter;
@@ -17,22 +18,24 @@ import rx.schedulers.Schedulers;
 public class VideoDetailPresenter extends BasePresenter<IVideoDetailView> {
 
     public void checkCollect(Integer videoId) {
-        RetrofitFactory.getCollectService().checkCollect(videoId)
-                .flatMap(new ResultToEntityFunc1<Boolean>())
-                .compose(this.<Boolean>bindToLifecycle())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean isCheck) {
-                        getView().onCheckCollect(isCheck);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+        if (LoginContext.isLogin()) {
+            RetrofitFactory.getCollectService().checkCollect(videoId)
+                    .flatMap(new ResultToEntityFunc1<Boolean>())
+                    .compose(this.<Boolean>bindToLifecycle())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Boolean>() {
+                        @Override
+                        public void call(Boolean isCheck) {
+                            getView().onCheckCollect(isCheck);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
 
-                    }
-                });
+                        }
+                    });
+        }
     }
 
     private boolean sending = false;
@@ -88,18 +91,20 @@ public class VideoDetailPresenter extends BasePresenter<IVideoDetailView> {
     }
 
     public void checkStar(Integer target) {
-        StarProvider.getInstance().checkStar(target)
-                .compose(this.<Boolean>bindToLifecycle())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        getView().onCheckStar(aBoolean);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                    }
-                });
+        if (LoginContext.isLogin()) {
+            StarProvider.getInstance().checkStar(target)
+                    .compose(this.<Boolean>bindToLifecycle())
+                    .subscribe(new Action1<Boolean>() {
+                        @Override
+                        public void call(Boolean aBoolean) {
+                            getView().onCheckStar(aBoolean);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                        }
+                    });
+        }
     }
 
     public void starMember(Integer target) {

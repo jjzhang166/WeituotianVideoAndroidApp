@@ -258,31 +258,6 @@
             android:background="@color/gray_light" />
 
 
-        <!--<RelativeLayout
-            android:id="@+id/layout_video_related"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/default_general_margin"
-                android:text="@string/video_about"
-                android:textColor="@color/font_normal"
-                android:textSize="@dimen/default_small_text_size" />
-
-        </RelativeLayout>-->
-
-        <!--<android.support.v7.widget.RecyclerView
-            android:id="@+id/recycle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:scrollbars="none" />-->
-
-
     </LinearLayout>
 
 

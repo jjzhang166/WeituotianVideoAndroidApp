@@ -109,15 +109,10 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
 //            UIUtil.showToast(this, "Success");
         } else {
             tilMobile.setErrorEnabled(true);
-            tilMobile.setError("手机号格式错误");
+            tilMobile.setError("用户名长度不能小于6");
         }
     }
 
-    public boolean verifyEmail() {
-        Pattern pattern = Pattern.compile("[\\w\\.\\-]+@([\\w\\-]+\\.)+[\\w\\-]+");
-        Matcher matcher = pattern.matcher((etUsername).getText().toString());
-        return matcher.matches();
-    }
 
     @Override
     public void showLoginFail(String msg) {

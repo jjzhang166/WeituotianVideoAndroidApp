@@ -16,6 +16,7 @@ import rx.schedulers.Schedulers;
 
 
 /**
+ * 登录presenter
  * Created by ange on 2017/3/16.
  */
 
@@ -47,14 +48,6 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
                         System.out.println(user);
                     }
                 });
-/*
-        RetrofitFactory.getUserService().doLogin(username, password).map(new Func1<Result<User>, User>() {
-            @Override
-            public User call(Result<User> userResult) {
-                return null;
-            }
-        });
-*/
     }
 
 }

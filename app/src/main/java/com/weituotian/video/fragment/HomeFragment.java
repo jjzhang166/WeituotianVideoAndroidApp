@@ -36,6 +36,7 @@ import com.weituotian.video.entity.Partition;
 import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.mvpview.IHomeView;
 import com.weituotian.video.presenter.HomePresenter;
+import com.weituotian.video.utils.ColorUtil;
 import com.weituotian.video.utils.UIUtil;
 import com.weituotian.video.widget.CircleImageView;
 
@@ -84,6 +85,7 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_home, container, false);
+        ButterKnife.bind(this, contentView);
         return contentView;
     }
 
@@ -91,7 +93,6 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ButterKnife.bind(this, view);
         setHasOptionsMenu(true);
         initContent();//初始化内容页
         initTab();//初始化选项卡
@@ -144,10 +145,10 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
         MenuItem menuItem = menu.findItem(R.id.menu_upload);
         MenuItem menuSearch = menu.findItem(R.id.menu_search);
         if (menuItem != null) {
-            tintMenuIcon(getActivity(), menuItem, android.R.color.holo_red_light);
+            ColorUtil.tintMenuIcon(getActivity(), menuItem, android.R.color.holo_red_light);
         }
         if (menuSearch != null) {
-            tintMenuIcon(getActivity(), menuSearch, android.R.color.holo_red_light);
+            ColorUtil.tintMenuIcon(getActivity(), menuSearch, android.R.color.holo_red_light);
         }
 
     }
@@ -171,13 +172,6 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
         return super.onOptionsItemSelected(item);
     }
 
-    public static void tintMenuIcon(Context context, MenuItem item, @ColorRes int color) {
-        Drawable normalDrawable = item.getIcon();
-        Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
-        DrawableCompat.setTint(wrapDrawable, ContextCompat.getColor(context, color));
-
-        item.setIcon(wrapDrawable);
-    }
 
     /**
      * DrawerLayout侧滑菜单开关
@@ -223,13 +217,22 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
             }, partition.getName());
         }
 
-        /*mFabRefresh.setOnClickListener(new View.OnClickListener() {
+        //点击floating action button刷新
+        mFabRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 int curPosition = mViewPager.getCurrentItem();
-                contentAdapter.refreshData(curPosition);
+                Fragment fragment = contentAdapter.getItem(curPosition);
+
+                if (fragment instanceof MyVideoListFragment) {
+                    ((MyVideoListFragment) fragment).loadData(true);//刷新
+                } else if (fragment instanceof BiliFragment) {
+                    ((BiliFragment) fragment).loadData(true);
+                }
+
             }
-        });*/
+        });
     }
 
     @Override

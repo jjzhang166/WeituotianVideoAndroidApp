@@ -26,7 +26,7 @@
             android:drawablePadding="4dp"
             android:drawableStart="@drawable/ic_email_black_18dp"
             android:gravity="center_vertical"
-            android:hint="请输入邮箱"
+            android:hint="@string/input_username"
             android:inputType="textEmailAddress"
             android:textColor="@color/cardview_dark_background" />
 
@@ -48,7 +48,7 @@
             android:drawablePadding="4dp"
             android:drawableStart="@drawable/ic_lock_black_18dp"
             android:gravity="center_vertical"
-            android:hint="请输入密码"
+            android:hint="@string/input_pwd"
             android:inputType="textPassword" />
 
     </android.support.design.widget.TextInputLayout>
@@ -59,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:background="@color/colorAccent"
-        android:text="登录"
+        android:text="@string/btn_login"
         android:textColor="@color/white"
         android:textSize="16sp" />
 

@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.weituotian.video.R;
+import com.weituotian.video.activity.MainActivity;
+import com.weituotian.video.activity.MemberInfoDetailsActivity;
 import com.weituotian.video.entity.FrontVideo;
 import com.weituotian.video.entity.VideoTag;
 import com.weituotian.video.http.LoginContext;
@@ -32,6 +34,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.http.POST;
 
 /**
  * Created by hcc on 16/8/4 21:18
@@ -136,6 +139,14 @@ public class VideoIntroductionFragment extends BaseMvpFragment<IVideoDetailView,
                 .into(mUserAvatar);
         mUserName.setText(frontVideo.getMemberName());
 
+        //点击用户头像打开acticity
+        mUserAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MemberInfoDetailsActivity.launch(getActivity(), frontVideo.getMemberId());
+            }
+        });
+
         //设置分享 收藏 投币数量
         mFavNum.setText(NumberUtil.converString(frontVideo.getCollect()));
 
@@ -154,7 +165,11 @@ public class VideoIntroductionFragment extends BaseMvpFragment<IVideoDetailView,
         //设置视频相关
         setVideoRelated();
 
+        setBtnCollect();//默认
         presenter.checkCollect(frontVideo.getId());
+
+        setStar();//默认
+        presenter.checkStar(frontVideo.getMemberId());
     }
 
     private void setVideoRelated() {
@@ -189,25 +204,33 @@ public class VideoIntroductionFragment extends BaseMvpFragment<IVideoDetailView,
     }
 
     //点击收藏
-    @OnClick(R.id.btn_collect)
+    @OnClick({R.id.btn_collect, R.id.collect_image})
     void collect() {
-        Integer videoId = frontVideo.getId();
-        if (mCollectText.getText().toString().equals(getResources().getString(R.string.to_ollect))) {
-            presenter.collect(videoId);
-        } else {
-            presenter.cancelCollect(videoId);
+        if (LoginContext.isLogin()) {
+            Integer videoId = frontVideo.getId();
+            if (mCollectText.getText().toString().equals(getResources().getString(R.string.to_ollect))) {
+                presenter.collect(videoId);
+            } else {
+                presenter.cancelCollect(videoId);
+            }
+        }else{
+            UIUtil.showToast(getActivity(),"登录后才能够收藏哦");
         }
     }
 
     //点击关注
     @OnClick(R.id.star)
     void star() {
-        //要关注的人id
-        Integer memberId = frontVideo.getMemberId();
-        if (mStar.getText().toString().equals(getResources().getString(R.string.star))) {
-            presenter.starMember(memberId);
-        } else {
-            presenter.cancelStar(memberId);
+        if (LoginContext.isLogin()) {
+            //要关注的人id
+            Integer memberId = frontVideo.getMemberId();
+            if (mStar.getText().toString().equals(getResources().getString(R.string.star))) {
+                presenter.starMember(memberId);
+            } else {
+                presenter.cancelStar(memberId);
+            }
+        } else{
+            UIUtil.showToast(getActivity(),"登录后才能够关注哦");
         }
     }
 
@@ -222,6 +245,7 @@ public class VideoIntroductionFragment extends BaseMvpFragment<IVideoDetailView,
         //设置图片着色
         Drawable drawableUp = DrawableCompat.wrap(mCollectImage.getDrawable());
         DrawableCompat.setTint(drawableUp, ContextCompat.getColor(getActivity(), R.color.colorAccent));
+        mCollectImage.setImageDrawable(drawableUp);
     }
 
     //设置按钮为取消收藏
@@ -230,14 +254,13 @@ public class VideoIntroductionFragment extends BaseMvpFragment<IVideoDetailView,
 
         Drawable drawableUp = DrawableCompat.wrap(mCollectImage.getDrawable());
         DrawableCompat.setTint(drawableUp, ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark));
+        mCollectImage.setImageDrawable(drawableUp);
     }
 
     @Override
     public void onCheckCollect(boolean isCheck) {
         if (isCheck) {
             setBtnCancelCollect();
-        } else {
-            setBtnCollect();
         }
     }
 

@@ -32,7 +32,10 @@ public interface IUserService {
     @POST("api/member/info/{id}")
     Observable<Result<RetInfo<AppMember>>> getMemberInfo(@Path("id") Integer userId);
 
-//    @POST("upload/cover/1.json")
+    //    @POST("upload/cover/1.json")
     @POST("api/member/videos")
     Observable<Result<RetInfo<PageInfo<VideoListVo>>>> getMemberVideos(@Query("userId") Integer userId, @Query("page") Integer page, @Query("pageSize") Integer pageSize);
+
+    @POST("member/reg/doreg")
+    Observable<Result<RetInfo<User>>> doreg(@Query("loginName") String loginName, @Query("name") String name, @Query("email") String email, @Query("password") String password);
 }

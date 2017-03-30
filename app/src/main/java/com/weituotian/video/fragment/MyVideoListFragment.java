@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 import com.weituotian.video.R;
 import com.weituotian.video.VideoListAdapter;
+import com.weituotian.video.activity.MemberInfoDetailsActivity;
+import com.weituotian.video.activity.VideoDetailsActivity;
+import com.weituotian.video.adapter.helper.EndlessRecyclerOnScrollListener;
 import com.weituotian.video.entity.VideoListVo;
 import com.weituotian.video.mvpview.IMyVideoListView;
 import com.weituotian.video.presenter.MyVideoListPresenter;
@@ -81,14 +84,30 @@ public class MyVideoListFragment extends BaseMvpLceFragment<SwipeRefreshLayout, 
 
     private void initRecycleView() {
         // Setup recycler view
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
 //        mRecyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.d_10)));
-        mRecyclerView.setOnLoadMoreListener(new CommonRecyclerView.LoadMoreListener() {
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
             @Override
-            public void onLoadMore() {
+            public void onLoadMore(int i) {
                 presenter.pagePlus();
                 loadDataMore();
+            }
+        });
+        /*mRecyclerView.setOnLoadMoreListener(new CommonRecyclerView.LoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+
+            }
+        });*/
+
+        //点击一项打开视频
+        mRecyclerView.setOnItemClickListener(new CommonRecyclerView.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, View itemView) {
+                Integer videoId = mAdapter.getItem(position).getId();
+                VideoDetailsActivity.launch(getActivity(), videoId);
             }
         });
 

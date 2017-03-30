@@ -275,12 +275,16 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
     //点击关注
     @OnClick(R.id.star)
     void star() {
-        //要关注的人id
-        Integer memberId = appMember.getId();
-        if (mStar.getText().toString().equals(getResources().getString(R.string.star))) {
-            presenter.starMember(memberId);
-        } else {
-            presenter.cancelStar(memberId);
+        if (LoginContext.isLogin()) {
+            //要关注的人id
+            Integer memberId = appMember.getId();
+            if (mStar.getText().toString().equals(getResources().getString(R.string.star))) {
+                presenter.starMember(memberId);
+            } else {
+                presenter.cancelStar(memberId);
+            }
+        }else {
+            UIUtil.showToast(this,"登录后才可以关注哦");
         }
     }
 
@@ -321,6 +325,12 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
         }
 
         loadVideos();
+
+        setCancelStar();
+        if (LoginContext.isLogin()) {
+            //检查是否已经关注了
+            presenter.checkStar(userID);
+        }
     }
 
     @Override
@@ -331,7 +341,7 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-//                        UploadActivity.this.finish();
+                        MemberInfoDetailsActivity.this.finish();
                     }
                 });
     }
@@ -365,8 +375,6 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
     public void onCheckStar(boolean isCheck) {
         if (isCheck) {
             setCancelStar();
-        } else {
-            setStar();
         }
     }
 
