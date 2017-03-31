@@ -16,6 +16,7 @@ import android.widget.Button;
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.weituotian.video.GlobalConstant;
 import com.weituotian.video.R;
+import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.mvpview.ILoginView;
 import com.weituotian.video.presenter.LoginPresenter;
 import com.weituotian.video.utils.SystemBarHelper;
@@ -24,6 +25,9 @@ import com.weituotian.video.utils.UIUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.weituotian.video.GlobalConstant.REQUEST_CODE_LOGIN;
+import static com.weituotian.video.GlobalConstant.REQUEST_CODE_REG;
 
 /**
  * Created by yifeng on 16/11/25.
@@ -51,7 +55,7 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, LoginActivity.class);
-        activity.startActivityForResult(intent, GlobalConstant.REQUEST_CODE_LOGIN);
+        activity.startActivityForResult(intent, GlobalConstant.REQUEST_CODE_REG);
     }
 
     @NonNull
@@ -115,9 +119,23 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
      */
     @OnClick(R.id.to_reg)
     public void onClick() {
-
+        RegActivity.launch(this);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_REG:
+                if (LoginContext.isLogin()) {
+                    //已登录
+                    finish();
+                }
+                break;
+            default:
+                break;
+        }
+    }
     /*以下实现view 接口*/
 
     @Override

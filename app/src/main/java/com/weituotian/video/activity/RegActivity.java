@@ -1,5 +1,6 @@
 package com.weituotian.video.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.weituotian.video.GlobalConstant;
 import com.weituotian.video.R;
 import com.weituotian.video.mvpview.IRegView;
 import com.weituotian.video.presenter.RegPresenter;
@@ -54,6 +56,11 @@ public class RegActivity extends BaseMvpActivity<IRegView, RegPresenter> impleme
     TextInputLayout mWrapperPassword2;
     @BindView(R.id.btn_reg)
     Button mBtnReg;
+
+    public static void launch(Activity activity) {
+        Intent intent = new Intent(activity, RegActivity.class);
+        activity.startActivityForResult(intent, GlobalConstant.REQUEST_CODE_LOGIN);
+    }
 
     @Override
     public int getContentViewId() {
@@ -105,7 +112,7 @@ public class RegActivity extends BaseMvpActivity<IRegView, RegPresenter> impleme
     private boolean checkRegForm() {
 
         //验证用户名
-        if ((mEtUsername).getText().toString().length() >= 6) {//verifyEmail()
+        if (getTextInputText(mEtUsername).length() >= 6) {//verifyEmail()
             mWrapperUsername.setErrorEnabled(false);
         } else {
             mWrapperUsername.setErrorEnabled(true);
@@ -114,9 +121,16 @@ public class RegActivity extends BaseMvpActivity<IRegView, RegPresenter> impleme
         }
 
         //验证昵称
+        if (getTextInputText(mEtName).length() >= 2) {//verifyEmail()
+            mWrapperUsername.setErrorEnabled(false);
+        } else {
+            mWrapperUsername.setErrorEnabled(true);
+            mWrapperUsername.setError("昵称长度不能小于2");
+            return false;
+        }
 
         //验证邮箱
-        if (verifyEmail(mEtEmail.getText().toString())) {
+        if (verifyEmail(getTextInputText(mEtEmail))) {
             mWrapperEmail.setErrorEnabled(false);
         } else {
             mWrapperEmail.setErrorEnabled(true);
@@ -125,7 +139,7 @@ public class RegActivity extends BaseMvpActivity<IRegView, RegPresenter> impleme
         }
 
         //验证密码是否相同
-        if (mEtPassword.getText().toString().equals(mEtPassword2.getText().toString())) {
+        if (getTextInputText(mEtPassword).equals(getTextInputText(mEtPassword2))) {
             mWrapperEmail.setErrorEnabled(false);
         } else {
             mWrapperEmail.setErrorEnabled(true);

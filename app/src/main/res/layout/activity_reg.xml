@@ -72,7 +72,7 @@
             android:drawablePadding="4dp"
             android:drawableStart="@drawable/ic_email_black_18dp"
             android:gravity="center_vertical"
-            android:hint="@string/input_username"
+            android:hint="@string/input_email"
             android:inputType="textEmailAddress"
             android:textColor="@color/cardview_dark_background" />
 
