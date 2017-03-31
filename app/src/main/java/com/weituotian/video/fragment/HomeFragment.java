@@ -81,22 +81,18 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
         return new HomePresenter();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_home, container, false);
-        ButterKnife.bind(this, contentView);
-        return contentView;
+    public int getContentViewId() {
+        return R.layout.fragment_home;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initAllMembersView(View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         initContent();//初始化内容页
         initTab();//初始化选项卡
         initToolBar();//初始化toolbar
+
         presenter.getPartitions();
     }
 

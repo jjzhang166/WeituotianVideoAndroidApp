@@ -36,6 +36,12 @@ public interface IUserService {
     @POST("api/member/videos")
     Observable<Result<RetInfo<PageInfo<VideoListVo>>>> getMemberVideos(@Query("userId") Integer userId, @Query("page") Integer page, @Query("pageSize") Integer pageSize);
 
+    @POST("api/member/collects")
+    Observable<Result<RetInfo<PageInfo<VideoListVo>>>> getCollects(@Query("userId") Integer userId, @Query("page") Integer page, @Query("pageSize") Integer pageSize);
+
+    @POST("api/member/stars")
+    Observable<Result<RetInfo<PageInfo<AppMember>>>> getstars(@Query("userId") Integer userId, @Query("page") Integer page, @Query("pageSize") Integer pageSize);
+
     @POST("member/reg/doreg")
     Observable<Result<RetInfo<User>>> doreg(@Query("loginName") String loginName, @Query("name") String name, @Query("email") String email, @Query("password") String password);
 }

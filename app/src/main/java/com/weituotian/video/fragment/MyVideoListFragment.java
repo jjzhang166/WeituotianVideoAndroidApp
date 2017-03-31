@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.weituotian.video.R;
-import com.weituotian.video.VideoListAdapter;
-import com.weituotian.video.activity.MemberInfoDetailsActivity;
+import com.weituotian.video.adapter.VideoListAdapter;
 import com.weituotian.video.activity.VideoDetailsActivity;
 import com.weituotian.video.adapter.helper.EndlessRecyclerOnScrollListener;
 import com.weituotian.video.entity.VideoListVo;
@@ -139,7 +138,6 @@ public class MyVideoListFragment extends BaseMvpLceFragment<SwipeRefreshLayout, 
             loadDataMore();
             firstLoad = true;
         }
-
     }
 
     @Override

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,11 +21,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.weituotian.video.GlobalConstant;
 import com.weituotian.video.R;
+import com.weituotian.video.fragment.CollectFragment;
 import com.weituotian.video.fragment.HomeFragment;
+import com.weituotian.video.fragment.StarFragment;
 import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.mvpview.IMainView;
 import com.weituotian.video.presenter.MainPresenter;
 import com.weituotian.video.utils.UIUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -129,6 +136,22 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                         }
 
                         break;
+                    case R.id.nav_favorites:
+                        if (checkLogin()) {
+                            if (mCollectFragment == null) {
+                                mCollectFragment = new CollectFragment();
+                            }
+                            switchFragment(mCollectFragment);
+                        }
+                        break;
+                    case R.id.nav_following:
+                        if (checkLogin()) {
+                            if (mStarFragment == null) {
+                                mStarFragment = new StarFragment();
+                            }
+                            switchFragment(mStarFragment);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -149,7 +172,26 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         }
     }
 
+    private List<Fragment> fragments = new ArrayList<>();
     private HomeFragment mHomePageFragment;
+    private CollectFragment mCollectFragment;
+    private StarFragment mStarFragment;
+    private Fragment currentFragment;
+
+    /**
+     * Fragment切换
+     */
+    private void switchFragment(Fragment fragment) {
+        mDrawerLayout.closeDrawers();
+
+        FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
+        trx.hide(currentFragment);
+        if (!fragment.isAdded()) {
+            trx.add(R.id.container, fragment);
+        }
+        trx.show(fragment).commit();
+        currentFragment = fragment;
+    }
 
     /**
      * 初始化Fragments
@@ -157,13 +199,17 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private void initFragments() {
 
         mHomePageFragment = new HomeFragment();
+        fragments.add(mHomePageFragment);
 
         // 添加显示第一个fragment
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.container, mHomePageFragment)
                 .show(mHomePageFragment).commit();
+
+        currentFragment = mHomePageFragment;
     }
+
 
     private boolean checkLogin() {
         if (!LoginContext.isLogin()) {
@@ -205,6 +251,19 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         }
 
         return true;
+    }
+
+    /**
+     * fragment中按下返回键，在activity中处理
+     */
+    @Override
+    public void onBackPressed() {
+        if (!(currentFragment instanceof HomeFragment)) {
+            //不是主要fragment就切换回主mHomePageFragment
+            switchFragment(mHomePageFragment);
+        }else{
+            super.onBackPressed();
+        }
     }
 
     public void toggleDrawer() {

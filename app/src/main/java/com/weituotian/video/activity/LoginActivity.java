@@ -21,9 +21,6 @@ import com.weituotian.video.presenter.LoginPresenter;
 import com.weituotian.video.utils.SystemBarHelper;
 import com.weituotian.video.utils.UIUtil;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -57,6 +54,12 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
         activity.startActivityForResult(intent, GlobalConstant.REQUEST_CODE_LOGIN);
     }
 
+    @NonNull
+    @Override
+    public LoginPresenter createPresenter() {
+        return new LoginPresenter();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,15 +69,6 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
         initToolBar();
 
         Intent intent = getIntent();//获得从mainactivity传来的数据
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void initToolBar() {
@@ -90,10 +84,13 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
         SystemBarHelper.setHeightAndPadding(this, mToolbar);
     }
 
-    @NonNull
     @Override
-    public LoginPresenter createPresenter() {
-        return new LoginPresenter();
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -113,6 +110,15 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
         }
     }
 
+    /**
+     * 点击去注册
+     */
+    @OnClick(R.id.to_reg)
+    public void onClick() {
+
+    }
+
+    /*以下实现view 接口*/
 
     @Override
     public void showLoginFail(String msg) {
@@ -127,4 +133,6 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
         setResult(2, intent);//返回给mainactivity使用
         this.finish();
     }
+
+
 }

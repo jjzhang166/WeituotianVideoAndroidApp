@@ -85,24 +85,14 @@ public class VideoCommentFragment extends BaseMvpFragment<ICommentView, CommentP
         return fragment;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_video_comment, container, false);
-        ButterKnife.bind(this, contentView);
-        return contentView;
+    public int getContentViewId() {
+        return R.layout.fragment_video_comment;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
-        super.onViewCreated(view, savedInstanceState);
-
+    protected void initAllMembersView(View view, @Nullable Bundle savedInstanceState) {
         this.videoId = getArguments().getInt(EXTRA_VIDEO_ID);
-        finishCreateView();
-    }
-
-    public void finishCreateView() {
         initRecyclerView();
     }
 

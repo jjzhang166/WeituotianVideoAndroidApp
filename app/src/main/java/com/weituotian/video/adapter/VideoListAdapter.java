@@ -1,4 +1,4 @@
-package com.weituotian.video;
+package com.weituotian.video.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,10 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.weituotian.video.adapter.BiliVideoAdapter;
-import com.weituotian.video.adapter.MyVideoAdapter;
-import com.weituotian.video.adapter.helper.AbsRecyclerViewAdapter;
-import com.weituotian.video.entity.BiliDingVideo;
+import com.weituotian.video.R;
 import com.weituotian.video.entity.VideoListVo;
 import com.weituotian.video.widget.recycler.HeaderAndFooterAdapter;
 import com.weituotian.video.widget.recycler.ViewHolder;
@@ -21,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
+ * 自用视频列表adapter
  * Created by ange on 2017/3/28.
  */
 

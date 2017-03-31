@@ -309,13 +309,7 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
         mFansNumText.setText(String.valueOf(appMember.getFans()));
 
         //设置用户性别
-        if (appMember.getSex() == SexEnum.MALE) {
-            mUserSex.setImageResource(R.drawable.ic_user_male);
-        } else if (appMember.getSex() == SexEnum.FEMALE) {
-            mUserSex.setImageResource(R.drawable.ic_user_female);
-        } else if (appMember.getSex() == SexEnum.UNKNOW) {
-            mUserSex.setImageResource(R.drawable.ic_user_gay_border);
-        }
+        mUserSex.setImageResource(SexEnum.getDrawable(appMember.getSex()));
 
         //设置用户签名信息
         if (!TextUtils.isEmpty(appMember.getDescript())) {
