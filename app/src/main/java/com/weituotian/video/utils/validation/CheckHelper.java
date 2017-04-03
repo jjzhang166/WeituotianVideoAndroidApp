@@ -1,4 +1,4 @@
-package com.weituotian.video.utils;
+package com.weituotian.video.utils.validation;
 
 import android.support.design.widget.TextInputEditText;
 
@@ -10,10 +10,6 @@ import java.util.regex.Pattern;
  */
 
 public class CheckHelper {
-
-    public final static String defaultEmailError = "邮箱错误";
-    public final static String defaultMinLengthError = "最小长度错误";
-    public final static String defaultMaxLengthError = "最大长度错误";
 
     public static String getTextInputText(TextInputEditText textInputEditText) {
         return textInputEditText.getText().toString();

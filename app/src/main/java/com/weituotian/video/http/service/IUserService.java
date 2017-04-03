@@ -43,5 +43,5 @@ public interface IUserService {
     Observable<Result<RetInfo<PageInfo<AppMember>>>> getstars(@Query("userId") Integer userId, @Query("page") Integer page, @Query("pageSize") Integer pageSize);
 
     @POST("member/reg/doreg")
-    Observable<Result<RetInfo<User>>> doreg(@Query("loginName") String loginName, @Query("name") String name, @Query("email") String email, @Query("password") String password);
+    Observable<Result<RetInfo<User>>> doreg(@Query("loginName") String loginName, @Query("name") String name, @Query("email") String email, @Query("password") String password,@Query("fromapp") boolean fromapp);
 }

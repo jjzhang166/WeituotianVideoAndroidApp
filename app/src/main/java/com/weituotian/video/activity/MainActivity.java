@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.weituotian.video.GlobalConstant;
 import com.weituotian.video.R;
 import com.weituotian.video.fragment.CollectFragment;
+import com.weituotian.video.fragment.HistoryFragment;
 import com.weituotian.video.fragment.HomeFragment;
 import com.weituotian.video.fragment.StarFragment;
 import com.weituotian.video.http.LoginContext;
@@ -114,7 +115,9 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_upload:
-
+                        if (checkLogin()) {
+                            startActivity(new Intent(MainActivity.this, UploadActivity.class));
+                        }
                         break;
                     case R.id.nav_home:
                         if (checkLogin()) {
@@ -133,8 +136,15 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                     case R.id.nav_logout:
                         if (checkLogin()) {
                             presenter.logout();
+                            mDrawerLayout.closeDrawers();
                         }
 
+                        break;
+                    case R.id.nav_histories:
+                        if (mHistoryFragment == null) {
+                            mHistoryFragment = new HistoryFragment();
+                        }
+                        switchFragment(mHistoryFragment);
                         break;
                     case R.id.nav_favorites:
                         if (checkLogin()) {
@@ -176,6 +186,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private HomeFragment mHomePageFragment;
     private CollectFragment mCollectFragment;
     private StarFragment mStarFragment;
+    private HistoryFragment mHistoryFragment;
     private Fragment currentFragment;
 
     /**
@@ -224,7 +235,6 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_REG:
-                break;
             case REQUEST_CODE_LOGIN://登录
                 if (LoginContext.isLogin()) {
                     //已登录
@@ -239,31 +249,36 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     /**
      * 监听back键处理DrawerLayout和SearchView
      */
-    @Override
+    /*@Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.i(TAG, "一个建被按下onKeyDown");
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mDrawerLayout.isDrawerOpen(mDrawerLayout.getChildAt(1))) {
-                mDrawerLayout.closeDrawers();
-            } else {
-                exitApp();
-            }
+            onBackPressed();
+            return true;
+
+        } else {
+            return super.onKeyDown(keyCode, event);
         }
 
-        return true;
-    }
+    }*/
 
     /**
-     * fragment中按下返回键，在activity中处理
+     *
      */
     @Override
     public void onBackPressed() {
-        if (!(currentFragment instanceof HomeFragment)) {
+//        super.onBackPressed();
+
+        if (mDrawerLayout.isDrawerOpen(mDrawerLayout.getChildAt(1))) {
+            mDrawerLayout.closeDrawers();
+        } else if (!(currentFragment instanceof HomeFragment)) {
             //不是主要fragment就切换回主mHomePageFragment
             switchFragment(mHomePageFragment);
-        }else{
-            super.onBackPressed();
+        } else {
+            exitApp();
         }
+        Log.i(TAG, "返回键被按下onBackPressed");
     }
 
     public void toggleDrawer() {

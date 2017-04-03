@@ -28,11 +28,11 @@
             android:checkable="true"
             android:icon="@drawable/ic_star_black_24dp"
             android:title="@string/nav_favorites" />
-        <!--<item
+        <item
             android:id="@+id/nav_histories"
             android:checkable="true"
             android:icon="@drawable/ic_history_black_24dp"
-            android:title="@string/nav_histories" />-->
+            android:title="@string/nav_histories" />
         <item
             android:id="@+id/nav_following"
             android:checkable="true"

@@ -108,9 +108,6 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoPlayView, VideoP
     private FrontVideo frontVideo;
 
 
-    //视频播放view,动态初始化
-    private VideoPlayerView mVideoPlayerView;
-
     //floating action button 的动画
     private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener1 = new AppBarLayout.OnOffsetChangedListener() {
         @Override
@@ -436,6 +433,9 @@ public class VideoDetailsActivity extends BaseMvpActivity<IVideoPlayView, VideoP
 //                orientationUtils.resolveByClick();
             }
         });*/
+
+        //增加history到本地数据库
+        presenter.addHistory(frontVideo);
     }
 
     /* 内置view pager 的adapter*/

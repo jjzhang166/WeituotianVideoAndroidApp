@@ -22,4 +22,6 @@
     <dimen name="title_margin_small">8dp</dimen>
     <dimen name="user_avatar_size">38dp</dimen>
     <dimen name="list_item_vertical_margin_small">8dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
 </resources>

@@ -55,7 +55,7 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, LoginActivity.class);
-        activity.startActivityForResult(intent, GlobalConstant.REQUEST_CODE_REG);
+        activity.startActivityForResult(intent, GlobalConstant.REQUEST_CODE_LOGIN);
     }
 
     @NonNull
@@ -76,7 +76,7 @@ public class LoginActivity extends MvpActivity<ILoginView, LoginPresenter> imple
     }
 
     private void initToolBar() {
-        mToolbar.setTitle("");
+        mToolbar.setTitle(getResources().getString(R.string.btn_login));
         setSupportActionBar(mToolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {

@@ -81,6 +81,7 @@
             <ImageView
                 android:layout_width="@dimen/video_info_mini_icons_size"
                 android:layout_height="@dimen/video_info_mini_icons_size"
+                android:tint="@color/black_alpha_60"
                 android:src="@drawable/ic_play_circle_outline_black_24dp" />
 
             <TextView

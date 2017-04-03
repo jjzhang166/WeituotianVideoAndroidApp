@@ -320,7 +320,7 @@ public class MemberInfoDetailsActivity extends BaseMvpActivity<IMemberInfoView, 
 
         loadVideos();
 
-        setCancelStar();
+        setStar();
         if (LoginContext.isLogin()) {
             //检查是否已经关注了
             presenter.checkStar(userID);

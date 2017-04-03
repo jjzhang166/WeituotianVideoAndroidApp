@@ -184,11 +184,14 @@ public class StarFragment extends BaseMvpFragment<IStarView, StarPresenter> impl
 
     @Override
     public void onLoadStars(PageInfo<AppMember> pageInfo) {
-        if (pageInfo.getSize() <= 0) {
+        if (pageInfo.getTotal() <= 0) {
             showHeadView();
+            mContentView.setRefreshing(false);
+            mLoadingView.setVisibility(View.GONE);
+        }else{
+            mAdapter.reset(pageInfo.getList());
+            finishLoad(pageInfo.getList().size());
         }
-        mAdapter.reset(pageInfo.getList());
-        finishLoad(pageInfo.getList().size());
     }
 
     @Override

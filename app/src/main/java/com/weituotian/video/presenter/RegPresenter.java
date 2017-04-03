@@ -23,7 +23,7 @@ public class RegPresenter extends BasePresenter<IRegView> {
             return;
         }
         sending = true;
-        RetrofitFactory.getUserService().doreg(username, name, email, password)
+        RetrofitFactory.getUserService().doreg(username, name, email, password, true)
                 .flatMap(new ResultToEntityFunc1<User>())
                 .compose(this.<User>bindToLifecycle())
                 .compose(this.<User>applySchedulers())
@@ -32,13 +32,13 @@ public class RegPresenter extends BasePresenter<IRegView> {
                     public void call(User user) {
                         getView().showRegSuccess();
                         LoginContext.saveUser(user);
-
+                        sending = false;
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         getView().showRegFail(throwable);
-
+                        sending = false;
                     }
                 });
     }

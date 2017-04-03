@@ -1,38 +1,46 @@
 package com.weituotian.video.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.weituotian.video.R;
-import com.weituotian.video.adapter.VideoListAdapter;
+import com.weituotian.video.VideoApp;
 import com.weituotian.video.activity.MainActivity;
+import com.weituotian.video.activity.MemberInfoDetailsActivity;
 import com.weituotian.video.activity.VideoDetailsActivity;
+import com.weituotian.video.adapter.HistoryAdapter;
 import com.weituotian.video.adapter.helper.EndlessRecyclerOnScrollListener;
-import com.weituotian.video.entity.PageInfo;
-import com.weituotian.video.entity.VideoListVo;
-import com.weituotian.video.http.LoginContext;
-import com.weituotian.video.mvpview.ICollectView;
-import com.weituotian.video.presenter.CollectPresenter;
-import com.weituotian.video.utils.UIUtil;
+import com.weituotian.video.entity.DaoSession;
+import com.weituotian.video.entity.HistoryVideo;
+import com.weituotian.video.entity.HistoryVideoDao;
 import com.weituotian.video.widget.recycler.CommonRecyclerView;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.rx.RxDao;
+import org.greenrobot.greendao.rx.RxQuery;
+
+import java.util.List;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
- * 收藏
- * Created by ange on 2017/3/31.
+ * Created by ange on 2017/4/2.
  */
 
-public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresenter> implements ICollectView {
+public class HistoryFragment extends Fragment {
 
     @BindView(R.id.toolbar_simple)
     Toolbar mToolbar;
@@ -46,32 +54,45 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
     @BindView(R.id.contentView)
     SwipeRefreshLayout mContentView;
 
-
     private View loadMoreView;
-    private TextView headerView;
 
-    private VideoListAdapter mAdapter;
+    DaoSession daoSession;
 
-    @NonNull
+    private HistoryVideoDao historyVideoDao;
+
+    private int page = 1;
+    private int pageSize = 10;
+
+    private HistoryAdapter mAdapter;
+
+    @Nullable
     @Override
-    public CollectPresenter createPresenter() {
-        return new CollectPresenter();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View contentView = inflater.inflate(R.layout.fragment_history, container, false);
+        ButterKnife.bind(this, contentView);
+        return contentView;
     }
 
     @Override
-    public int getContentViewId() {
-        return R.layout.fragment_collect;
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        initAllMembersView();
+
+        // get the DAO
+        daoSession = ((VideoApp) getActivity().getApplication()).getDaoSession();
+        historyVideoDao = daoSession.getHistoryVideoDao();
+
+        // query all notes, sorted a-z by their text
+        //rx用法
+
+        /*historiesQuery = historyVideoDao.queryBuilder()
+                .limit(pageSize)
+                .orderDesc(HistoryVideoDao.Properties.ViewTime).build();*/
+
+        loadData();
     }
 
-    @Override
-    protected void initAllMembersView(View view, @Nullable Bundle savedInstanceState) {
+    private void initAllMembersView() {
         setHasOptionsMenu(true);
-        finishCreateView();
-        Integer uid = LoginContext.user.getId();
-        presenter.setUserId(uid);
-    }
-
-    private void finishCreateView() {
         //下拉刷新
         mContentView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -79,7 +100,6 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
                 loadData();
             }
         });
-
         initToolBar();
         initRecyclerView();
     }
@@ -87,7 +107,7 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
     public void initToolBar() {
         //toolbar
         if (mToolbar != null) {
-            mToolbar.setTitle("我的收藏");
+            mToolbar.setTitle("历史记录");
             MainActivity activity = ((MainActivity) getActivity());
             activity.setSupportActionBar(mToolbar);
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -100,7 +120,7 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         //adapter
-        mAdapter = new VideoListAdapter(getActivity());
+        mAdapter = new HistoryAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         //加载更多
@@ -115,18 +135,12 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
         mRecyclerView.setOnItemClickListener(new CommonRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View itemView) {
-                Integer videoId = mAdapter.getItem(position).getId();
-                VideoDetailsActivity.launch(getActivity(), videoId);
+                Long videoId = mAdapter.getItem(position).getId();
+                VideoDetailsActivity.launch(getActivity(), videoId.intValue());
             }
         });
 
-        createHeaderView();
         createLoadMoreView();
-    }
-
-    private void createHeaderView() {
-        headerView = new TextView(getActivity());
-        headerView.setText("暂时没有评论");
     }
 
     private void createLoadMoreView() {
@@ -134,11 +148,6 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
         mAdapter.enableFooterView();
         mAdapter.addFooterView(loadMoreView);
         loadMoreView.setVisibility(View.GONE);
-    }
-
-    private void showHeadView() {
-        mAdapter.enableHeaderView();
-        mAdapter.addHeaderView(headerView);
     }
 
     @Override
@@ -150,31 +159,54 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onFirstVisable() {
-        loadData();
+    private void getVideos(final boolean loadmore) {
+        if (loadmore) {
+            page++;
+        } else {
+            page = 1;
+        }
+
+        RxQuery<HistoryVideo> rxQuery = historyVideoDao.queryBuilder()
+                .offset((page - 1) * pageSize)
+                .limit(pageSize)
+                .orderDesc(HistoryVideoDao.Properties.ViewTime)
+                .rx();
+
+        rxQuery.list()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<HistoryVideo>>() {
+                    @Override
+                    public void call(List<HistoryVideo> notes) {
+                        if (loadmore) {
+                            onLoadMore(notes);
+
+                        } else {
+                            onLoad(notes);
+                        }
+                    }
+                });
     }
 
     /**
      * 加载第一页数据，用于初始化的时候和刷新的时候
      */
     private void loadData() {
-        presenter.getCollects(false);
-        mLoadingView.setVisibility(View.VISIBLE);
+        getVideos(false);
+        loadMoreView.setVisibility(View.VISIBLE);
     }
 
     /**
      * 加载更多数据
      */
     private void loadMoreData() {
-        presenter.getCollects(true);
+        getVideos(true);
         loadMoreView.setVisibility(View.VISIBLE);
     }
 
-    /*以下实现 view 的接口*/
+    /* 加载完成 */
 
     public void finishLoad(Integer size) {
-        if (size < presenter.getSize()) {
+        if (size < pageSize) {
             //没有更多了
             TextView textView = (TextView) loadMoreView.findViewById(R.id.footer_text);
             textView.setText("没有更多了");
@@ -187,26 +219,13 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
         mLoadingView.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onLoadCollects(PageInfo<VideoListVo> pageInfo) {
-        if (pageInfo.getTotal() <= 0) {
-            showHeadView();
-            mContentView.setRefreshing(false);
-            mLoadingView.setVisibility(View.GONE);
-        }else{
-            mAdapter.reset(pageInfo.getList());
-            finishLoad(pageInfo.getList().size());
-        }
+    public void onLoad(List<HistoryVideo> videos) {
+        mAdapter.reset(videos);
+        finishLoad(videos.size());
     }
 
-    @Override
-    public void onLoadMoreCollects(PageInfo<VideoListVo> pageInfo) {
-        mAdapter.addAll(pageInfo.getList());
-        finishLoad(pageInfo.getList().size());
-    }
-
-    @Override
-    public void onLoadError(Throwable throwable) {
-        UIUtil.showToast(getActivity(), throwable.getMessage());
+    public void onLoadMore(List<HistoryVideo> notes) {
+        mAdapter.addAll(notes);
+        finishLoad(notes.size());
     }
 }

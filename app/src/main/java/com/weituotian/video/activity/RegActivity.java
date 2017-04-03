@@ -17,6 +17,8 @@ import com.weituotian.video.mvpview.IRegView;
 import com.weituotian.video.presenter.RegPresenter;
 import com.weituotian.video.utils.SystemBarHelper;
 import com.weituotian.video.utils.UIUtil;
+import com.weituotian.video.utils.validation.CheckItem;
+import com.weituotian.video.utils.validation.CheckManager;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,7 +61,7 @@ public class RegActivity extends BaseMvpActivity<IRegView, RegPresenter> impleme
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, RegActivity.class);
-        activity.startActivityForResult(intent, GlobalConstant.REQUEST_CODE_LOGIN);
+        activity.startActivityForResult(intent, GlobalConstant.REQUEST_CODE_REG);
     }
 
     @Override
@@ -76,10 +78,11 @@ public class RegActivity extends BaseMvpActivity<IRegView, RegPresenter> impleme
     @Override
     protected void initAllMembersView(Bundle savedInstanceState) {
         initToolBar();
+        initValidation();
     }
 
     private void initToolBar() {
-        mToolbar.setTitle("");
+        mToolbar.setTitle(getResources().getString(R.string.btn_reg));
         setSupportActionBar(mToolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -89,6 +92,17 @@ public class RegActivity extends BaseMvpActivity<IRegView, RegPresenter> impleme
         //设置StatusBar透明
         SystemBarHelper.immersiveStatusBar(this);
         SystemBarHelper.setHeightAndPadding(this, mToolbar);
+    }
+
+    private CheckManager checkManager;
+
+    private void initValidation() {
+        checkManager = new CheckManager();
+        CheckItem.newBuilder().editText(mEtUsername).layout(mWrapperUsername).minLength(6).minLengthStr("用户名长度必须大于6")
+                .build().appendTo(checkManager);
+        CheckItem.newBuilder().editText(mEtName).layout(mWrapperName).minLength(2).build().appendTo(checkManager);
+        CheckItem.newBuilder().editText(mEtEmail).layout(mWrapperEmail).email(true).build().appendTo(checkManager);
+        CheckItem.newBuilder().editText(mEtPassword2).layout(mWrapperPassword2).equalTo(mEtPassword).build().appendTo(checkManager);
     }
 
     @Override
@@ -111,7 +125,8 @@ public class RegActivity extends BaseMvpActivity<IRegView, RegPresenter> impleme
 
     private boolean checkRegForm() {
 
-        //验证用户名
+
+/*        //验证用户名
         if (getTextInputText(mEtUsername).length() >= 6) {//verifyEmail()
             mWrapperUsername.setErrorEnabled(false);
         } else {
@@ -145,9 +160,10 @@ public class RegActivity extends BaseMvpActivity<IRegView, RegPresenter> impleme
             mWrapperEmail.setErrorEnabled(true);
             mWrapperEmail.setError("两次输入的密码不相同");
             return false;
-        }
+        }*/
 
-        return true;
+//        return true;
+        return checkManager.checkAll();
     }
 
     /**
