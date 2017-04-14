@@ -18,11 +18,14 @@ import com.weituotian.video.adapter.AppMemberAdapter;
 import com.weituotian.video.adapter.helper.EndlessRecyclerOnScrollListener;
 import com.weituotian.video.entity.AppMember;
 import com.weituotian.video.entity.PageInfo;
+import com.weituotian.video.entity.VideoListVo;
 import com.weituotian.video.http.LoginContext;
 import com.weituotian.video.mvpview.IStarView;
 import com.weituotian.video.presenter.StarPresenter;
 import com.weituotian.video.utils.UIUtil;
 import com.weituotian.video.widget.recycler.CommonRecyclerView;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 
@@ -121,7 +124,10 @@ public class StarFragment extends BaseMvpFragment<IStarView, StarPresenter> impl
 
     private void createHeaderView() {
         headerView = new TextView(getActivity());
-        headerView.setText("暂时没有评论");
+        headerView.setText("暂时没有关注");
+        mAdapter.enableHeaderView();
+        mAdapter.addHeaderView(headerView);
+        headerView.setVisibility(View.GONE);
     }
 
     private void createLoadMoreView() {
@@ -132,8 +138,11 @@ public class StarFragment extends BaseMvpFragment<IStarView, StarPresenter> impl
     }
 
     private void showHeadView() {
-        mAdapter.enableHeaderView();
-        mAdapter.addHeaderView(headerView);
+        headerView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideHeadView() {
+        headerView.setVisibility(View.GONE);
     }
 
     @Override
@@ -186,9 +195,11 @@ public class StarFragment extends BaseMvpFragment<IStarView, StarPresenter> impl
     public void onLoadStars(PageInfo<AppMember> pageInfo) {
         if (pageInfo.getTotal() <= 0) {
             showHeadView();
+            mAdapter.reset(new ArrayList<AppMember>());//重绘制adpater
             mContentView.setRefreshing(false);
             mLoadingView.setVisibility(View.GONE);
-        }else{
+        } else {
+            hideHeadView();
             mAdapter.reset(pageInfo.getList());
             finishLoad(pageInfo.getList().size());
         }

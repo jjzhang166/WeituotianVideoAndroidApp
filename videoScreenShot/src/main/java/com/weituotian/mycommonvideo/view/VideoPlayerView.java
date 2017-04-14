@@ -75,7 +75,9 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
         playerControll.setmControllerListener(this);
     }
 
-    /**---------------- 对外方法--------------------- */
+    /**
+     * ---------------- 对外方法---------------------
+     */
 
     private Uri mVideoUrl;
 
@@ -376,8 +378,10 @@ public class VideoPlayerView extends RelativeLayout implements TextureView.Surfa
 
     @Override
     public void onProgressChanged(int seekTime) {
-        mediaPlayer.seekTo(seekTime);
-        updatePlayProgress();
+        if (mPlayState != VideoPlayState.STAND_TO_PREPARE) {
+            mediaPlayer.seekTo(seekTime);
+            updatePlayProgress();
+        }
     }
 
     @Override

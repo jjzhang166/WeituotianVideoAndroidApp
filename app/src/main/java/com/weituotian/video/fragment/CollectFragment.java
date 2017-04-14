@@ -25,6 +25,8 @@ import com.weituotian.video.presenter.CollectPresenter;
 import com.weituotian.video.utils.UIUtil;
 import com.weituotian.video.widget.recycler.CommonRecyclerView;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 
 /**
@@ -126,7 +128,10 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
 
     private void createHeaderView() {
         headerView = new TextView(getActivity());
-        headerView.setText("暂时没有评论");
+        headerView.setText("暂时没有收藏");
+        mAdapter.enableHeaderView();
+        mAdapter.addHeaderView(headerView);
+        headerView.setVisibility(View.GONE);
     }
 
     private void createLoadMoreView() {
@@ -137,8 +142,11 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
     }
 
     private void showHeadView() {
-        mAdapter.enableHeaderView();
-        mAdapter.addHeaderView(headerView);
+        headerView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideHeadView(){
+        headerView.setVisibility(View.GONE);
     }
 
     @Override
@@ -191,9 +199,11 @@ public class CollectFragment extends BaseMvpFragment<ICollectView, CollectPresen
     public void onLoadCollects(PageInfo<VideoListVo> pageInfo) {
         if (pageInfo.getTotal() <= 0) {
             showHeadView();
+            mAdapter.reset(new ArrayList<VideoListVo>());
             mContentView.setRefreshing(false);
             mLoadingView.setVisibility(View.GONE);
         }else{
+            hideHeadView();
             mAdapter.reset(pageInfo.getList());
             finishLoad(pageInfo.getList().size());
         }

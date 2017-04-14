@@ -369,6 +369,12 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     public void onLogoutSuccess() {
         LoginContext.logout();
         setNoLogin("退出成功");
+
+        //跳到主页，关闭登陆才能使用的fragment
+        switchFragment(mHomePageFragment);
+        mCollectFragment = null;
+        mStarFragment = null;
+        mHistoryFragment = null;
     }
 
     @Override

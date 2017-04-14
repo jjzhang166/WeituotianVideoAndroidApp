@@ -107,7 +107,7 @@ public class UploadPresenter extends BasePresenter<IUploadView> {
                 });*/
 
         videoCall = OkHttpUtils.post()//
-                .url("http://192.168.1.107:8080/webx/member/video/ajaxvideo")
+                .url(RetrofitFactory.BASE_SERVER_URL + "member/video/ajaxvideo")
                 .addFile("file", file.getName(), file)//
 //                .addParams("username", LoginContext.user.getName())
                 .addHeader("Content-Type", "multipart/form-data")
@@ -157,7 +157,7 @@ public class UploadPresenter extends BasePresenter<IUploadView> {
 
     public void uploadCover(File file) {
         coverCall = OkHttpUtils.post()//
-                .url("http://192.168.1.107:8080/webx/member/video/ajaxcover")
+                .url(RetrofitFactory.BASE_SERVER_URL + "member/video/ajaxcover")
                 .addFile("file", file.getName(), file)//
 //                .addParams("username", LoginContext.user.getName())
                 .addHeader("Content-Type", "multipart/form-data")
