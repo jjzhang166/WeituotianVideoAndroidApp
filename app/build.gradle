@@ -100,5 +100,7 @@ dependencies {
     compile 'net.zetetic:android-database-sqlcipher:3.5.6@aar'
     compile 'org.greenrobot:greendao:3.2.0'
 
+    compile 'com.miguelcatalan:materialsearchview:1.4.0'
+
     compile project(':videoScreenShot')
 }

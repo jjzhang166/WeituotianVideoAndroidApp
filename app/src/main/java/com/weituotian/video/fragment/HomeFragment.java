@@ -26,10 +26,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.weituotian.video.R;
 import com.weituotian.video.activity.LoginActivity;
 import com.weituotian.video.activity.MainActivity;
 import com.weituotian.video.activity.MemberInfoDetailsActivity;
+import com.weituotian.video.activity.SearchActivity;
 import com.weituotian.video.activity.UploadActivity;
 import com.weituotian.video.adapter.HomePagerAdapter;
 import com.weituotian.video.entity.Partition;
@@ -70,6 +72,9 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
     @BindView(R.id.vp_content)
     ViewPager mViewPager;
 
+    @BindView(R.id.search_view)
+    MaterialSearchView mSearchView;
+
     @BindView(R.id.fab_refresh)
     FloatingActionButton mFabRefresh;
 
@@ -92,7 +97,7 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
         initContent();//初始化内容页
         initTab();//初始化选项卡
         initToolBar();//初始化toolbar
-
+        initSearchView();//初始化搜索控件
         presenter.getPartitions();
     }
 
@@ -123,13 +128,38 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
         mTabs.setupWithViewPager(mViewPager);
     }
 
-    public void initToolBar() {
+    private void initToolBar() {
         //toolbar
         if (mToolbar != null) {
             mToolbar.setTitle("");
             MainActivity activity = ((MainActivity) getActivity());
             activity.setSupportActionBar(mToolbar);
         }
+    }
+
+    private void initSearchView() {
+
+        //初始化SearchBar
+        mSearchView.setVoiceSearch(false);
+        mSearchView.setCursorDrawable(R.drawable.custom_cursor);
+        mSearchView.setEllipsize(true);
+        mSearchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
+        mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                SearchActivity.launch(getActivity(), query);
+                return false;
+            }
+
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -147,6 +177,9 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
             ColorUtil.tintMenuIcon(getActivity(), menuSearch, android.R.color.holo_red_light);
         }
 
+        // 设置SearchViewItemMenu
+        MenuItem item = menu.findItem(R.id.menu_search);
+        mSearchView.setMenuItem(item);
     }
 
     @Override
@@ -159,9 +192,10 @@ public class HomeFragment extends BaseMvpFragment<IHomeView, HomePresenter> impl
                     LoginActivity.launch(getActivity());
                 }
                 break;
+            /*
             case R.id.menu_search:
-                MemberInfoDetailsActivity.launch(getActivity(), 1);
                 break;
+            */
             default:
                 break;
         }

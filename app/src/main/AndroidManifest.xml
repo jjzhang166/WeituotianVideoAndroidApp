@@ -39,6 +39,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".activity.MemberInfoDetailsActivity" />
 
+        <!--搜索-->
+        <activity android:name=".activity.SearchActivity"/>
         <!--选择视频-->
         <activity
             android:name="vn.tungdx.mediapicker.activities.MediaPickerActivity"

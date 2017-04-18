@@ -18,5 +18,6 @@
     <color name="black_alpha_60">#4f000000</color>
     <color name="black_alpha_30">#48000000</color>
     <color name="line_bg">#e6e6e6</color>
+    <color name="search_background_color">#e9eaea</color>
 
 </resources>
