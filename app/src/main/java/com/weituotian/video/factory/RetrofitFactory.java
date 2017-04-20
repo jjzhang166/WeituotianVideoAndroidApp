@@ -35,7 +35,7 @@ public class RetrofitFactory {
     private static final int TIME_OUT = 12;//超时时间
     private static final String BILI_BASE_URL = "http://www.bilibili.com/";
 //    public static final String BASE_SERVER_URL = "http://weituotian.win/";
-    public static final String BASE_SERVER_URL = "http://192.168.1.107:8080/webx/";
+    public static final String BASE_SERVER_URL = "http://172.26.192.3:8080/webx/";
 
     private static volatile IBiliService biliService;
     private static volatile IUserService userService;
